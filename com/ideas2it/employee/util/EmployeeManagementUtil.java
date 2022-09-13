@@ -6,7 +6,7 @@ import java.time.LocalDate;
 /**
  * Organizes the utility code segments.
  * 
- * @version 1.0
+ * @version 1.0 13-09-2022
  * @author Naveenkumar R
  */
 public class EmployeeManagementUtil {
