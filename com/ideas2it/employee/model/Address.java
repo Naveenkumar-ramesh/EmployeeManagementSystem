@@ -3,7 +3,7 @@ package com.ideas2it.employee.model;
 /**
  * It presents employee address.
  *
- * @version 2.0
+ * @version 2.0 13-09-2022
  * @author Naveenkumar R
  */
 public class Address {
