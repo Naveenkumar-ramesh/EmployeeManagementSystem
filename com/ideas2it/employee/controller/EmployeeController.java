@@ -1,10 +1,9 @@
 package com.ideas2it.employee.controller;
 
-import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.model.Employee;
-import com.ideas2it.employee.view.EmployeeView;
+import com.ideas2it.employee.model.AddressDTO;
+import com.ideas2it.employee.model.EmployeeDTO;
 import com.ideas2it.employee.service.EmployeeManagementService;
-import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementServiceImpl;
+import com.ideas2it.employee.view.EmployeeView;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -15,15 +14,15 @@ import java.util.ArrayList;
  * @author Naveenkumar R
  */
 public class EmployeeController {
-    EmployeeManagementServiceImpl employeeManagementService = new EmployeeManagementServiceImpl();
+    EmployeeManagementService employeeService = new EmployeeManagementService();
 
     /**
      * Get's the value from viewand transfer to service section.
      *
      * @return returns true if employee added
      */
-    public boolean addEmployee(Employee employee) {
-        return employeeManagementService.addEmployee(employee);
+    public boolean addEmployee(EmployeeDTO employeeDTO) {
+        return employeeService.addEmployee(employeeDTO);
 
     }
 
@@ -32,8 +31,8 @@ public class EmployeeController {
      *
      * @return the employee details from the service class.
      */
-    public List<Employee> displayEmployee() {
-        return employeeManagementService.displayEmployee();
+    public List<EmployeeDTO> displayEmployee() {
+        return employeeService.displayEmployee();
     }
 
     /**
@@ -42,8 +41,8 @@ public class EmployeeController {
      * @param Employee name
      * @return returns relevent employee details
      */
-    public Employee searchEmployee(String name) {
-        return employeeManagementService.searchEmployee(name);
+    public EmployeeDTO searchEmployee(String name) {
+        return employeeService.searchEmployee(name);
     }
 
 
@@ -52,8 +51,8 @@ public class EmployeeController {
      * @param employee
      * @return the employee details from the service class.
      */
-    public boolean updateEmployee(Employee employee) {
-        return employeeManagementService.updateEmployee(employee);
+    public boolean updateEmployee(EmployeeDTO employeeDTO) {
+        return employeeService.updateEmployee(employeeDTO);
     }
 
     /**
@@ -62,7 +61,7 @@ public class EmployeeController {
      * @return true if employee is deleted
      */
     public boolean deleteEmployee(String name) {
-        return employeeManagementService.deleteEmployee(name);
+        return employeeService.deleteEmployee(name);
     }
 
 }

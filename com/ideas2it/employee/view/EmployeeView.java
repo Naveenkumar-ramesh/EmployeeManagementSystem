@@ -2,9 +2,10 @@ package com.ideas2it.employee.view;
 
 import com.ideas2it.employee.constant.EmployeeManagementConstant;
 import com.ideas2it.employee.controller.EmployeeController;
-import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.model.Employee;
-import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementServiceImpl;
+import com.ideas2it.employee.dao.EmployeeManagementDao.EmployeeDaoImpl;
+import com.ideas2it.employee.dao.EmployeeDao;
+import com.ideas2it.employee.model.AddressDTO;
+import com.ideas2it.employee.model.EmployeeDTO;
 import com.ideas2it.employee.service.EmployeeManagementService;
 import com.ideas2it.employee.util.EmployeeManagementUtil;
 
@@ -27,7 +28,7 @@ public class EmployeeView {
 
     Scanner scanner = new Scanner(System.in);
     EmployeeController employeeController = new EmployeeController();
-    Employee employee = new Employee();
+    EmployeeDTO employeeDTO = new EmployeeDTO();
 
     /**
      * Create, read, search, update, delete and exit operations takes place by choice.
@@ -105,10 +106,10 @@ public class EmployeeView {
             System.out.print(EmployeeManagementConstant.EMPLOYEE_SALARY);
             double salary = Double.parseDouble(scanner.nextLine()); 
 
-            Address address = addAddress();
-            employee = new Employee(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, address);
+            AddressDTO addressDTO = addAddress();
+            employeeDTO = new EmployeeDTO(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, addressDTO);
 
-            if (employeeController.addEmployee(employee)) {
+            if (employeeController.addEmployee(employeeDTO)) {
                 System.out.println("Added");
             } else {
                 System.out.println("Not Added...Try Again");
@@ -124,7 +125,7 @@ public class EmployeeView {
      * and provides organised address.
      * @return Employee address.
      */
-    public Address addAddress() {
+    public AddressDTO addAddress() {
 
         System.out.print("Enter the DoorNumber:");
         String doorNumber = scanner.nextLine();
@@ -139,11 +140,11 @@ public class EmployeeView {
         String state = scanner.nextLine();
 
         System.out.print("Enter the Pincode:");
-        int pinCode = scanner.nextInt();
+        int pinCode = Integer.parseInt(scanner.nextLine());
 
-        Address address = new Address(doorNumber, street, city, state, pinCode);
+        AddressDTO addressDTO = new AddressDTO(doorNumber, street, city, state, pinCode);
 
-        return address;
+        return addressDTO;
     }
 
     /**
@@ -151,11 +152,11 @@ public class EmployeeView {
      * saved in the the database.
      */
     public void displayEmployee() {
-        List<Employee> employees = employeeController.displayEmployee();
-        Iterator<Employee> iterator = employees.iterator();
+        List<EmployeeDTO> employees = employeeController.displayEmployee();
+        Iterator<EmployeeDTO> iterator = employees.iterator();
         while (iterator.hasNext()) {
-            Employee employee = iterator.next();
-            System.out.println(employee);
+            EmployeeDTO employeeDTO = iterator.next();
+            System.out.println(employeeDTO);
         }
     }
 
@@ -166,8 +167,8 @@ public class EmployeeView {
     public void searchEmployee() {
 
         System.out.println(EmployeeManagementConstant.EMPLOYEE_NAME);
-        String name = scanner.next();
-        Employee selectEmployee = employeeController.searchEmployee(name);
+        String name = scanner.nextLine();
+        EmployeeDTO selectEmployee = employeeController.searchEmployee(name);
         if (selectEmployee != null) {
             System.out.println(selectEmployee);
         } else {
@@ -185,7 +186,7 @@ public class EmployeeView {
     public void updateEmployee() {
 
         EmployeeManagementUtil employeeUtil = new EmployeeManagementUtil();
-        Employee employee = new Employee();
+        EmployeeDTO employeeDTO = new EmployeeDTO();
         System.out.print(EmployeeManagementConstant.EMPLOYEE_NAME);
         String name = scanner.nextLine();
 
@@ -207,10 +208,10 @@ public class EmployeeView {
         System.out.print(EmployeeManagementConstant.EMPLOYEE_SALARY);
         double salary = Double.parseDouble(scanner.nextLine()); 
 
-        Address address = addAddress();
-        employee = new Employee(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, address);
+        AddressDTO addressDTO = addAddress();
+        employeeDTO = new EmployeeDTO(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, addressDTO);
 
-        if (employeeController.addEmployee(employee) != false) {
+        if (employeeController.updateEmployee(employeeDTO)) {
             System.out.println("Employee details has been added");
         } else {
             System.out.println("Employee details has not been Added");
