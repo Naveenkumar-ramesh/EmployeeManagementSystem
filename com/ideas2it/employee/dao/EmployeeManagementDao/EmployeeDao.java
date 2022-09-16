@@ -1,8 +1,8 @@
 package com.ideas2it.employee.dao.EmployeeManagementDao;
 
-import com.ideas2it.employee.service.EmployeeManagementService;
-import com.ideas2it.employee.dao.EmployeeDao;
-import com.ideas2it.employee.mapper.ModelMapper;
+import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
+import com.ideas2it.employee.dao.Dao;
+import com.ideas2it.employee.mapper.EmployeeMapper;
 import com.ideas2it.employee.model.Address;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.view.EmployeeView;
@@ -17,9 +17,9 @@ import java.util.ArrayList;
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
-public class EmployeeDaoImpl implements EmployeeDao {
+public class EmployeeDao implements Dao {
 
-    ModelMapper modelMapper = new ModelMapper();
+    EmployeeMapper employeeMapper = new EmployeeMapper();
     List<Employee> employees = new ArrayList<Employee>();
 
     /**

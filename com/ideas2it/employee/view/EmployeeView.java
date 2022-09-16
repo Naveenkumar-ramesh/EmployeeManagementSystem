@@ -2,11 +2,11 @@ package com.ideas2it.employee.view;
 
 import com.ideas2it.employee.constant.EmployeeManagementConstant;
 import com.ideas2it.employee.controller.EmployeeController;
-import com.ideas2it.employee.dao.EmployeeManagementDao.EmployeeDaoImpl;
-import com.ideas2it.employee.dao.EmployeeDao;
-import com.ideas2it.employee.model.AddressDTO;
-import com.ideas2it.employee.model.EmployeeDTO;
-import com.ideas2it.employee.service.EmployeeManagementService;
+import com.ideas2it.employee.dao.EmployeeManagementDao.EmployeeDao;
+import com.ideas2it.employee.dao.Dao;
+import com.ideas2it.employee.dto.AddressDTO;
+import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.util.EmployeeManagementUtil;
 
 import java.text.ParseException;

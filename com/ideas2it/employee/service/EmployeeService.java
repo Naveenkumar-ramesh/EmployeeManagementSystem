@@ -1,7 +1,7 @@
-package com.ideas2it.employee.dao;
+package com.ideas2it.employee.service;
 
-import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.model.Employee;
+import com.ideas2it.employee.dto.AddressDTO;
+import com.ideas2it.employee.dto.EmployeeDTO;
 import java.util.List;
 
 /**
@@ -10,7 +10,7 @@ import java.util.List;
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
-public interface EmployeeDao {
+public interface EmployeeService {
 
     
     /**
@@ -20,8 +20,7 @@ public interface EmployeeDao {
      * @param employee from controller
      * @return Return the boolean value.
      */
-    @Override
-    boolean addEmployee(Employee employee);
+    boolean addEmployee(EmployeeDTO employeeDTO);
 
     /**
      * Returns EmployeeDetail to be displayed.
@@ -29,8 +28,15 @@ public interface EmployeeDao {
      * @param employee
      * @return Returns employee
      */
-    @Override
-    List<Employee> displayEmployee();
+    List<EmployeeDTO> displayEmployee();
+
+    /**
+     * Receives relevent employee details from database.
+     *
+     * @param Employee name
+     * @return returns relevent employee details
+     */
+    EmployeeDTO searchEmployee(String name);
 
     /**
      * Updates the employee detail and returns true if successful.
@@ -38,8 +44,7 @@ public interface EmployeeDao {
      * @param employee
      * @return true if employee is updated
      */
-    @Override
-    boolean updateEmployee(Employee employee);
+    boolean updateEmployee(EmployeeDTO employeeDTO);
 
     /**
      * Deletes the employee details and returns true if successful.
@@ -47,7 +52,6 @@ public interface EmployeeDao {
      * @param employee name
      * @return true if employee details are deleted.
      */
-    @Override
     boolean deleteEmployee(String name);
 
 }

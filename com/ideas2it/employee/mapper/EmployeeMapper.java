@@ -1,9 +1,9 @@
 package com.ideas2it.employee.mapper;
 
 import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.model.AddressDTO;
+import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.model.Employee;
-import com.ideas2it.employee.model.EmployeeDTO;
+import com.ideas2it.employee.dto.EmployeeDTO;
 
 /**
  * Converts DTO Employee details to model Employee details and 
@@ -12,7 +12,7 @@ import com.ideas2it.employee.model.EmployeeDTO;
  * @version 1.8 15-09-2022
  * @author Naveenkumar R
  */
-public class ModelMapper {
+public class EmployeeMapper {
 
     /**
      * Convert model Employee details to DTO Employee details
