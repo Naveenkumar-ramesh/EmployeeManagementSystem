@@ -1,5 +1,7 @@
 package com.ideas2it.employee.model;
 
+import com.ideas2it.employee.model.Address;
+
 import java.time.LocalDate;
 
 /**
@@ -9,44 +11,60 @@ import java.time.LocalDate;
  * @author Naveenkumar R
  */
 public class Employee {
-    private String id;
-    private String name;
+    private long employeeId;
+    private String firstName;
+    private String lastName;
     private String email;
-    private String phoneNumber;
-    private LocalDate dateOfJoining;
+    private long phoneNumber;
     private double salary;
-    private String bloodGroup;
+    private LocalDate dateOfJoining;
     private Address address;
+    private LocalDate dateOfBirth;
+    private String gender;
+    private String role;
 
     public Employee() {
     }
 
-    public Employee(String id, String name, String email, String phoneNumber, 
-                          LocalDate dateOfJoining, double salary, String bloodGroup, Address address) {
-        this.id = id;
-        this.name = name;
+    public Employee(long employee_Id, String firstName,String lastName, String email, long phoneNumber, 
+                    double salary,LocalDate dateOfJoining, Address address,LocalDate dateOfBirth,
+                    String gender, String role)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.dateOfJoining = dateOfJoining;
         this.salary = salary;
-        this.bloodGroup = bloodGroup;
+        this.dateOfJoining = dateOfJoining;
         this.address = address;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.role = role;
     }
 
-    public String getId() {
-        return id;
+
+    public long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEmployeeId(long employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -57,20 +75,16 @@ public class Employee {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
     public LocalDate getDateOfJoining() {
         return dateOfJoining;
-    }
-
-    public void setDateOfJoining(LocalDate dateOfJoining) {
-        this.dateOfJoining = dateOfJoining;
     }
 
     public double getSalary() {
@@ -81,12 +95,8 @@ public class Employee {
         this.salary = salary;
     }
 
-    public String getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(String bloodGroup) {
-        this.bloodGroup = bloodGroup;
+    public void setDateOfJoining(LocalDate dateOfJoining) {
+        this.dateOfJoining = dateOfJoining;
     }
 
     public Address getAddress() {
@@ -97,6 +107,31 @@ public class Employee {
         this.address = address;
     }
 
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+
     /**
      * Overiding toString() method
      * In thee toString method string builder is used to
@@ -104,14 +139,18 @@ public class Employee {
      */
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nId              : ").append(id)
-                     .append("\nName            : ").append(name)
-                     .append("\nEmail           : ").append(email)
-                     .append("\nPhoneNumber     : ").append(phoneNumber)
-                     .append("\nDate Of Joining : ").append(dateOfJoining)
-                     .append("\nSalary          : ").append(salary)
-                     .append("\nBlood Group     : ").append(bloodGroup)
-                     .append("\nEmployee Address ").append(address);
+        stringBuilder.append("\nEmployee Id           : ").append(employeeId)
+                     .append("\nFirst Name            : ").append(firstName)
+                     .append("\nLast Name             : ").append(lastName)
+                     .append("\nEmail                 : ").append(email)
+                     .append("\nPhoneNumber           : ").append(phoneNumber)
+                     .append("\nSalary                : ").append(salary)
+                     .append("\nDate Of Joining       : ").append(dateOfJoining)
+                     .append(getAddress())
+                     .append("\nDate Of Joining       : ").append(dateOfJoining)
+                     .append("\nGender                : ").append(gender)
+                     .append("\nRole                  : ").append(role);
+
         return stringBuilder.toString();
     }
 }

@@ -85,34 +85,43 @@ public class EmployeeView {
         EmployeeManagementUtil employeeUtil = new EmployeeManagementUtil();
         System.out.println(EmployeeManagementConstant.VALID_DETAILS);
         try {
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_NAME);
-            String name = scanner.nextLine();
 
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_ID);
-            String id = scanner.nextLine();
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_FIRST_NAME);
+            String firstName = scanner.nextLine();
 
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
-            String phoneNumber = scanner.nextLine();
-
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_DOJ);
-            LocalDate dateOfJoining = employeeUtil.getDate();
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_LAST_NAME);
+            String lastName = scanner.nextLine();
 
             System.out.print(EmployeeManagementConstant.EMPLOYEE_EMAIL);
             String email = scanner.nextLine();
 
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_BLOODGROUP);
-            String bloodGroup = scanner.nextLine();
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
+            long phoneNumber = Long.parseLong(scanner.nextLine());
 
             System.out.print(EmployeeManagementConstant.EMPLOYEE_SALARY);
             double salary = Double.parseDouble(scanner.nextLine()); 
 
-            AddressDTO addressDTO = addAddress();
-            employeeDTO = new EmployeeDTO(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, addressDTO);
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_DOJ);
+            LocalDate dateOfJoining = employeeUtil.getDate();
+
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_DOB);
+            LocalDate dateOfBirth = employeeUtil.getDate();
+
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_GENDER);
+            String gender = scanner.nextLine();
+
+            System.out.print(EmployeeManagementConstant.EMPLOYEE_ROLE);
+            String role = scanner.nextLine();
+
+
+            AddressDTO address = addAddress();
+            employeeDTO = new EmployeeDTO(firstName, lastName,email, phoneNumber,
+                                          salary, dateOfJoining, address, dateOfBirth, gender, role);
 
             if (employeeController.addEmployee(employeeDTO)) {
-                System.out.println("Added");
+                System.out.println("Employee Details Added");
             } else {
-                System.out.println("Not Added...Try Again");
+                System.out.println("Employee Details  Not Added...Try Again");
             }
 
         } catch (InputMismatchException e) {
@@ -142,9 +151,13 @@ public class EmployeeView {
         System.out.print("Enter the Pincode:");
         int pinCode = Integer.parseInt(scanner.nextLine());
 
-        AddressDTO addressDTO = new AddressDTO(doorNumber, street, city, state, pinCode);
+        System.out.print("Enter the Address Type:");
+        String type = scanner.nextLine();
 
-        return addressDTO;
+        AddressDTO address = new AddressDTO(doorNumber, street,
+                                               city, state, pinCode, type);
+
+        return address;
     }
 
     /**
@@ -166,7 +179,7 @@ public class EmployeeView {
      */
     public void searchEmployee() {
 
-        System.out.println(EmployeeManagementConstant.EMPLOYEE_NAME);
+        System.out.println(EmployeeManagementConstant.EMPLOYEE_FIRST_NAME);
         String name = scanner.nextLine();
         EmployeeDTO selectEmployee = employeeController.searchEmployee(name);
         if (selectEmployee != null) {
@@ -187,29 +200,37 @@ public class EmployeeView {
 
         EmployeeManagementUtil employeeUtil = new EmployeeManagementUtil();
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_NAME);
-        String name = scanner.nextLine();
 
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_ID);
-        String id = scanner.nextLine();
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_FIRST_NAME);
+        String firstName = scanner.nextLine();
 
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
-        String phoneNumber = scanner.nextLine();
-
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_DOJ);
-        LocalDate dateOfJoining = employeeUtil.getDate();
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_LAST_NAME);
+        String lastName = scanner.nextLine();
 
         System.out.print(EmployeeManagementConstant.EMPLOYEE_EMAIL);
         String email = scanner.nextLine();
 
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_BLOODGROUP);
-        String bloodGroup = scanner.nextLine();
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
+        long phoneNumber = Long.parseLong(scanner.nextLine());
 
         System.out.print(EmployeeManagementConstant.EMPLOYEE_SALARY);
         double salary = Double.parseDouble(scanner.nextLine()); 
 
-        AddressDTO addressDTO = addAddress();
-        employeeDTO = new EmployeeDTO(id, name, email, phoneNumber, dateOfJoining, salary, bloodGroup, addressDTO);
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_DOJ);
+        LocalDate dateOfJoining = employeeUtil.getDate();
+
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_DOB);
+        LocalDate dateOfBirth = employeeUtil.getDate();
+
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_GENDER);
+        String gender = scanner.nextLine();
+
+        System.out.print(EmployeeManagementConstant.EMPLOYEE_ROLE);
+        String role = scanner.nextLine();
+
+        AddressDTO address = addAddress();
+        employeeDTO = new EmployeeDTO(firstName, lastName,email, phoneNumber,
+                                      salary, dateOfJoining, address, dateOfBirth, gender, role);
 
         if (employeeController.updateEmployee(employeeDTO)) {
             System.out.println("Employee details has been added");
@@ -225,9 +246,9 @@ public class EmployeeView {
     public void deleteEmployee() {
 
         System.out.println("Enter the Employee name to delete:");
-        String name = scanner.nextLine();
+        String email = scanner.nextLine();
 
-        if (employeeController.deleteEmployee(name) != false) {
+        if (employeeController.deleteEmployee(email) != false) {
             System.out.println("Employee details deleted");
         } else {
             System.out.println("Employee details not deleted");

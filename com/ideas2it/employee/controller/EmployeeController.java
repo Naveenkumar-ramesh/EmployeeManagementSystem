@@ -61,8 +61,8 @@ public class EmployeeController {
      *
      * @return true if employee is deleted
      */
-    public boolean deleteEmployee(String name) {
-        return employeeService.deleteEmployee(name);
+    public boolean deleteEmployee(String email) {
+        return employeeService.deleteEmployee(email);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.ideas2it.employee.dao;
 
-import com.ideas2it.employee.model.Address;
 import com.ideas2it.employee.model.Employee;
+import com.ideas2it.employee.dao.EmployeeManagementDao.Factory;
 import java.util.List;
 
 /**
@@ -44,6 +44,6 @@ public interface Dao {
      * @param employee name
      * @return true if employee details are deleted.
      */
-    boolean deleteEmployee(String name);
+    boolean deleteEmployee(Employee employee);
 
 }

@@ -12,17 +12,19 @@ public class Address {
     private String city;
     private String state;
     private int pinCode;
+    private String type;
 
     public Address() {
     }
 
     public Address(String doorNumber, String street, String city,
-                           String state, int pinCode) {
+                           String state, int pinCode, String type) {
         this.doorNumber = doorNumber;
         this.street = street;
         this.city = city;
         this.state = state;
         this.pinCode = pinCode;
+        this.type = type;
     }
 
     public String getDoorNumber() {
@@ -65,13 +67,23 @@ public class Address {
         this.pinCode = pinCode;
     }
 
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String toString() {
         StringBuilder stringBuilderAddress = new StringBuilder();
         stringBuilderAddress.append("\nDoorNumber      : ").append(doorNumber)
                             .append("\nStreet          : ").append(street)
                             .append("\nCity            : ").append(city)
                             .append("\nState           : ").append(state)
-                            .append("\nPincode         : ").append(pinCode);
+                            .append("\nPincode         : ").append(pinCode)
+                            .append("\nType            : ").append(type);
 
         return stringBuilderAddress.toString();
     }

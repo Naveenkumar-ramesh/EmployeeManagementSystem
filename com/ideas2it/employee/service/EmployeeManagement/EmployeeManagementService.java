@@ -52,11 +52,11 @@ public class EmployeeManagementService implements EmployeeService {
      * {@inheritDoc}
      * 
      */
-    public EmployeeDTO searchEmployee(String name) {
+    public EmployeeDTO searchEmployee(String firstName) {
         List<EmployeeDTO> employeesDto = displayEmployee();
         EmployeeDTO searchEmployeeDto = null;
         for (int i = 0; i < employeesDto.size(); i++) {
-            if (employeesDto.get(i).getName().equals(name)) {
+            if (employeesDto.get(i).getFirstName().equals(firstName)) {
                 searchEmployeeDto = employeesDto.get(i);
             }
         }
@@ -78,8 +78,17 @@ public class EmployeeManagementService implements EmployeeService {
      * {@inheritDoc}
      * 
      */
-    public boolean deleteEmployee(String name) {
-        return employeeDao.deleteEmployee(name);
+    public boolean deleteEmployee(String email) {
+
+        List<Employee> employees = employeeDao.displayEmployee();
+        Employee employee = null;
+
+        for(int i = 0; i < employees.size(); i++) {
+            if(employees.get(i).getEmail().equals(email)) {
+                 employee = employees.get(i);
+            }
+        }
+        return employeeDao.deleteEmployee(employee);
     }
 
 }
