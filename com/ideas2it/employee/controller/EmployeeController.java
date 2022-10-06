@@ -2,6 +2,7 @@ package com.ideas2it.employee.controller;
 
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
 import com.ideas2it.employee.view.EmployeeView;
@@ -22,7 +23,7 @@ public class EmployeeController {
      *
      * @return returns true if employee added
      */
-    public boolean addEmployee(EmployeeDTO employeeDTO) {
+    public boolean addEmployee(EmployeeDTO employeeDTO) throws EMSException {
         return employeeService.addEmployee(employeeDTO);
 
     }
@@ -32,7 +33,7 @@ public class EmployeeController {
      *
      * @return the employee details from the service class.
      */
-    public List<EmployeeDTO> displayEmployee() {
+    public List<EmployeeDTO> displayEmployee() throws EMSException {
         return employeeService.displayEmployee();
     }
 
@@ -42,8 +43,8 @@ public class EmployeeController {
      * @param Employee name
      * @return returns relevent employee details
      */
-    public EmployeeDTO searchEmployee(String name) {
-        return employeeService.searchEmployee(name);
+    public EmployeeDTO searchEmployee(String firstName) throws EMSException {
+        return employeeService.searchEmployee(firstName);
     }
 
 
@@ -52,7 +53,7 @@ public class EmployeeController {
      * @param employee
      * @return the employee details from the service class.
      */
-    public boolean updateEmployee(EmployeeDTO employeeDTO) {
+    public boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException{
         return employeeService.updateEmployee(employeeDTO);
     }
 
@@ -61,8 +62,19 @@ public class EmployeeController {
      *
      * @return true if employee is deleted
      */
-    public boolean deleteEmployee(String email) {
-        return employeeService.deleteEmployee(email);
+    public boolean deleteEmployee(int employeeId) throws EMSException {
+        return employeeService.deleteEmployee(employeeId);
+    }
+
+    /**
+     * Employee details to be validated are transfered
+     * Transfer's back true if field satisfies it expectations.
+     *
+     * @param regex pattern and field value
+     * @return true if employee is deleted
+     */
+    public boolean validateField(String regexPattern, String fieldValue) {
+        return employeeService.validateField(regexPattern, fieldValue);
     }
 
 }

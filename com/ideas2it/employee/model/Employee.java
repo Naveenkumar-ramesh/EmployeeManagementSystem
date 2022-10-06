@@ -11,7 +11,7 @@ import java.time.LocalDate;
  * @author Naveenkumar R
  */
 public class Employee {
-    private long employeeId;
+    private int employeeId;
     private String firstName;
     private String lastName;
     private String email;
@@ -26,10 +26,12 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(long employee_Id, String firstName,String lastName, String email, long phoneNumber, 
-                    double salary,LocalDate dateOfJoining, Address address,LocalDate dateOfBirth,
-                    String gender, String role)
+    public Employee(int employeeId, String firstName,String lastName,
+                    String email, long phoneNumber,double salary,
+                    LocalDate dateOfJoining, Address address,
+                    LocalDate dateOfBirth, String gender, String role)
     {
+        this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -43,11 +45,11 @@ public class Employee {
     }
 
 
-    public long getEmployeeId() {
+    public int getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(long employeeId) {
+    public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
 
@@ -145,9 +147,10 @@ public class Employee {
                      .append("\nEmail                 : ").append(email)
                      .append("\nPhoneNumber           : ").append(phoneNumber)
                      .append("\nSalary                : ").append(salary)
-                     .append("\nDate Of Joining       : ").append(dateOfJoining)
+                     .append("\nDate Of Joining       : ")
+                     .append(dateOfJoining)
                      .append(getAddress())
-                     .append("\nDate Of Joining       : ").append(dateOfJoining)
+                     .append("\nDate Of Birth       : ").append(dateOfBirth)
                      .append("\nGender                : ").append(gender)
                      .append("\nRole                  : ").append(role);
 

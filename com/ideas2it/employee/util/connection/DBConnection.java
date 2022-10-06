@@ -1,4 +1,4 @@
-package com.ideas2it.employee.dao.EmployeeManagementDao;
+package com.ideas2it.employee.util.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,11 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
- *
- *
+ * Provides connection between database and application.
+ * With this connection we can manipulate the data in database.
+ * 
+ * @version 2.0 28-09-2022.
+ * @author  Naveenkumar R.
  */
-public class Factory {
+public class DBConnection {
 
     private static Connection connection = null;
 
@@ -19,7 +21,7 @@ public class Factory {
     private static final String user = "root";
     private static final String password = "Naveen@1998";
 
-    private Factory() {}
+    private DBConnection() {}
 
     public static Connection getConnection() {
         
@@ -29,10 +31,8 @@ public class Factory {
                 connection = DriverManager.getConnection(URL, user, password);
         } catch (ClassNotFoundException e) {
             System.out.println("Could not find database driver class");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            System.out.println("Invalid user/password. Try again");
-            e.printStackTrace();
+        } catch ( SQLException e) {
+            System.out.println(e);
         }
         return connection;
     }
@@ -44,7 +44,7 @@ public class Factory {
                connection.close();
            }
        } catch (SQLException e) {
-           e.printStackTrace();
+           System.out.println(e);
        }
     }
 }

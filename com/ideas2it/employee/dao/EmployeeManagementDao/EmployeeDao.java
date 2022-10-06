@@ -1,9 +1,10 @@
 package com.ideas2it.employee.dao.EmployeeManagementDao;
 
 import com.ideas2it.employee.dao.Dao;
-import com.ideas2it.employee.dao.EmployeeManagementDao.Factory;
+import com.ideas2it.employee.util.connection.DBConnection;
 import com.ideas2it.employee.model.Address;
 import com.ideas2it.employee.model.Employee;
+import com.ideas2it.employee.exception.EMSException;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;  
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,185 +25,338 @@ import java.util.ArrayList;
  * @author Naveenkumar R
  */
 public class EmployeeDao implements Dao {
-
-    Connection connection = Factory.getConnection();    
+   
     /**
-     * {@inheritDoc}
+     * Saves the employee details in above database
+     * and return true if the process is successful.
      * 
+     * @param employee from controller
+     * @return Return the boolean value.
      */
-    public boolean addEmployee(Employee employee) {
-        int added = 0;
+    public boolean addEmployee(Employee employee) throws EMSException {
+
+        boolean isAdded = false;
         PreparedStatement preparedStatement = null;
-        long employeeid = 0;
+        Connection connection = DBConnection.getConnection();
+        int count = 0;
 
         try {
-            preparedStatement = connection.preparedStatement("insert into employee(first_name," +
-                                " last_name, date_of_birth," +
-                                " email, phone_number, salary, date_of_joining, date_of_birth," +
-                                " gender, role) values(?,?,?,?,?,?,?,?,?)");
-            preparedStatement.setString(2,employee.getFirstName());
-            preparedStatement.setString(3,employee.getLastName());
-            preparedStatement.setString(4,employee.getEmail());
-            preparedStatement.setLong(5,employee.getPhoneNumber());
-            preparedStatement.setDouble(6,employee.getSalary());
-            preparedStatement.setDate(7, Date.valueOf(employee.getDateOfJoining()));
-            preparedStatement.setDate(8, Date.valueOf(employee.getDateOfBirth()));
-            preparedStatement.setString(9,employee.getGender());
-            preparedStatement.setString(10,employee.getRole());
-            added = preparedStatement.executeUpdate();
-
-            ResultSet result = preparedStatement.executeQuery(" Select " +
-                               "employee_id from employee where email = " + "'" + employee.getEmail() + "'");
-            while (result.next()){
-                employeeid = result.getLong("employee_id");
-            }
-
-            preparedStatement = connection.prepareStatement("insert into address(employee_id, doorNumber,"
-                                + "street, city, state, pincode, type)"
-                                + "values(?,?,?,?,?,?,?)");
-            Address address = new Address();
-            preparedStatement.setLong(2,employeeid);
-            preparedStatement.setString(3,address.getDoorNumber());
-            preparedStatement.setString(4,address.getStreet());
-            preparedStatement.setString(5,address.getCity());
-            preparedStatement.setString(6,address.getState());
-            preparedStatement.setInt(7,address.getPinCode());
-            preparedStatement.setString(8,address.getType());
-            added = preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        Factory.closeConnection();
-        return (added != 0);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    public List<Employee> displayEmployee() {
-        List<Employee> employees = new ArrayList();
-        StringBuilder query = new StringBuilder();
-        query.append("Select employee_id, first_name, last_name,email,")
-             .append("phone_number, salary, date_of_joining, date_of_birth, gender, role,")
-             .append("doornumber,street,city,state,pincode,type")
-             .append("join employee on address ")
-             .append("employee.employee_id = address.employee_id");
-
-        try {
-            PreparedStatement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
+            String query =("insert into employee(first_name, last_name, "
+                              + "email, phone_number, salary,date_of_joining, "
+                              + " date_of_birth, gender, role) "
+                              + " values(?,?,?,?,?,?,?,?,?)");
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,employee.getFirstName());
+            preparedStatement.setString(2,employee.getLastName());
+            preparedStatement.setString(3,employee.getEmail());
+            preparedStatement.setLong(4,employee.getPhoneNumber());
+            preparedStatement.setDouble(5,employee.getSalary());
+            preparedStatement.setDate(6, Date.valueOf(employee.
+                                                      getDateOfJoining()));
+            preparedStatement.setDate(7, Date.valueOf(employee.
+                                                      getDateOfBirth()));
+            preparedStatement.setString(8,employee.getGender());
+            preparedStatement.setString(9,employee.getRole());
+            count = preparedStatement.executeUpdate();
+            query = ("select employee_id from employee where email = ?");
+            PreparedStatement statementId = DBConnection.getConnection()
+                                            .prepareStatement(query);
+            statementId.setString(1, employee.getEmail());
+            ResultSet result = statementId.executeQuery();       
+            int employeeid = 0;
 
             while (result.next()) {
-
-                long employeeId = result.getLong(1);
-                String firstName = result.getString(2);
-                String lastName = result.getString(3);
-                String email = result.getString(4);
-                long phoneNumber = result.getLong(5);
-                double salary = result.getDouble(6);
-                LocalDate DateOfJoining = result.getDateOfJoining(7);
-                LocalDate DateOfBirth = result.getDateOfBirth(8);
-                String gender = result.getString(9);
-                String role = result.getString(10);
-                String doorNumber = result.getString(11);
-                String street = result.getString(12);
-                String city = result.getString(13);
-                String state = result.getString(14);
-                int PinCode = result.getInt(15);
-                String Type = result.getString(16);
-
-                Address address = new Address(doorNumber, street, city,
-                                                state, pincode, type);
-                Employee employee = new Employee(employeeId, firstName,
-                                     lastName, email, phoneNumber, salary,
-                                     dateOfJoining, dateOfBirth, gender, role);
-                employees.add(employee);
+                employeeid = result.getInt(1);
             }
-        } catch (SQLException e) {
-            System.out.println(e);
+            isAdded = addAddress(employee.getAddress(), employeeid); 
+        } catch (SQLException e) { 
+            throw new EMSException
+            ("Error occured in inserting data, Try again", "ErrorCode 101");
+        } 
+        finally {
+            DBConnection.closeConnection();
+        }  
+        if (count > 0 && isAdded) {
+            isAdded = true;
         }
-        Factory.closeConnection();
-        return employees;  
+        return isAdded;  
     }
 
-
     /**
-     * {@inheritDoc}
+     * Saves the address details in above database
+     * and return true if the process is successful.
      * 
+     * @param employee from controller
+     * @return Return the boolean value.
      */
-    public boolean updateEmployee(Employee employee) {
-        int updated = 0;
+    public boolean addAddress(Address address, int employeeid) throws EMSException {
+        boolean isAdded= false;
         PreparedStatement preparedStatement = null;
-        long employeeid = 0;
-        StringBuilder query = new StringBuilder();
-        query.append("update employee set employee_id, first_name, last_name,")
-             .append(" date_of_birth, email, phone_number, date_of_joining,")
-             .append(" date_of_birth, gender, role, doornumber, street,")
-             .append("city, state, pincode, type");
+        Connection connection = DBConnection.getConnection();
+        int count = 0;
 
+        String query = ("insert into address(employee_id, door_number,"
+                                + "street, city, state, pin_code, type)"
+                                + "values(?,?,?,?,?,?,?)");
         try {
-            ResultSet result = prepareStatement.executeQuery("Select "
-                               + "employee_id from employee where email = "
-                               + employee.getEmail);
-            employeeid = result.getLong("employee_id");
-            preparedStatement = connection.prepareStatement("update employee."
-                               + "set(?,?,?,?,?,?,?,?,?,?)where employee_id = "
-                               + "" + "" + employeeid + "");
-            preparedStatement.setString(2,employee.getFirstName());
-            preparedStatement.setString(3,employee.getLastName());
-            preparedStatement.setString(4,employee.getEmail());
-            preparedStatement.setLong(5,employee.getPhoneNumber());
-            preparedStatement.setDouble(6,employee.getSalary());
-            preparedStatement.setDate(7, Date.valueOf(employee.getDateOfJoining()));
-            preparedStatement.setDate(8, Date.valueOf(employee.getDateOfBirth()));
-            preparedStatement.setString(9,employee.getGender());
-            preparedStatement.setString(10,employee.getRole());
-            updated = preparedStatement.executeUpdate();
-
-            preparedStatement = prepareStatement("update address."
-                               + "set(?,?,?,?,?,?,?) where employee_Id = " 
-                               + "" + employeeid + "");
-            Address address = new Address();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, employeeid);
             preparedStatement.setString(2,address.getDoorNumber());
             preparedStatement.setString(3,address.getStreet());
             preparedStatement.setString(4,address.getCity());
             preparedStatement.setString(5,address.getState());
             preparedStatement.setInt(6,address.getPinCode());
             preparedStatement.setString(7,address.getType());
-            updated = preparedStatement.executeUpdate();
+            count = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e);
+            throw new EMSException
+            ("Error occured in inserting data, Try again", "ErrorCode 101");
         }
-        Factory.closeConnection();
-        return (updated != 0);
+        finally {
+           DBConnection.closeConnection(); 
+        }  
+        if (count > 0) {
+            isAdded = true;
+        }
+        return isAdded;    
     }
 
     /**
-     * {@inheritDoc}
-     * 
+     * Returns EmployeeDetail to be displayed.
+     *
+     * @param employee
+     * @return Returns employee
      */
-    public boolean deleteEmployee(Employee employee) {
-        
-        int deleted = 0;
-        PreparedStatement preparedStatement = null;
-        try {
+    public List<Employee> displayEmployee() throws EMSException {
+        List<Employee> employees = new ArrayList();
+        Connection connection = DBConnection.getConnection();
+        StringBuilder query = new StringBuilder();
+        query.append("select e.employee_id,e.first_name,e.last_name,e.email,")
+             .append("e.phone_number,e.salary,e.date_of_joining,")
+             .append("e.date_of_birth,e.gender,e.role,a.door_number,")
+             .append("a.street,a.city,a.state,a.pin_code,")
+             .append("a.type from employee e join address a ")
+             .append("on e.employee_id = a.employee_id");
 
-            ResultSet result = connection.prepareStatement.executeQuery("Select" +
-                              "employee_id from employee where email = "
-                              + employee.getEmail());
-            long employeeid = result.getLong("employee_id");
-            preparedStatement = connection.prepareStatement("delete from address where "
-                                + "employee_id = " + "" + employeeid + "");
-            deleted = preparedStatement.executeUpdate();
-            preparedStatement = connection.prepareStatement("delete from employee where "
-                               + "employee_id = " + employeeid );
-            deleted = preparedStatement.executeUpdate();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query.toString());
+
+            while (result.next()) {
+                int employeeId = result.getInt(1);
+                String firstName = result.getString(2);
+                String lastName = result.getString(3);
+                String email = result.getString(4);
+                long phoneNumber = result.getLong(5);
+                double salary = result.getDouble(6);
+                LocalDate dateOfJoining = result.getDate(7).toLocalDate();
+                LocalDate dateOfBirth = result.getDate(8).toLocalDate();
+                String gender = result.getString(9);
+                String role = result.getString(10);
+                String doorNumber = result.getString(11);
+                String street = result.getString(12);
+                String city = result.getString(13);
+                String state = result.getString(14);
+                int pinCode = result.getInt(15);
+                String type = result.getString(16);
+
+                Address address = new Address(doorNumber, street, city,
+                                                state, pinCode, type);
+                Employee employee = new Employee(employeeId, firstName,
+                                     lastName, email, phoneNumber, salary,
+                                     dateOfJoining, address, dateOfBirth,
+                                     gender, role);
+                employees.add(employee);
+            }
         } catch (SQLException e) {
-            System.out.println(e);
+            throw new EMSException
+            ("Error occured while retreving data, Try again", "ErrorCode 102");
         }
-        Factory.closeConnection();
-        return (deleted != 0);
+        finally {
+            DBConnection.closeConnection();
+        }
+        return employees;  
     }
 
+
+    /**
+     * Updates the employee detail and returns true if successful.
+     *
+     * @param employee
+     * @return true if employee is updated
+     */
+    public boolean updateEmployee(Employee employee) throws EMSException {
+        boolean isUpdated = false;
+        PreparedStatement preparedStatement = null;
+        Connection connection = DBConnection.getConnection();
+        int count = 0;
+        int employeeid = employee.getEmployeeId();
+        StringBuilder query = new StringBuilder();
+        query.append("update employee set first_name = ?, last_name = ?,")
+             .append(" email = ?, phone_number = ?,salary = ?, ")
+             .append(" date_of_joining = ?,date_of_birth = ?, gender = ?,")
+             .append("  role = ? where employee_id = ")
+             .append(employeeid);
+
+        try {
+            preparedStatement = connection.prepareStatement(query.toString());
+            preparedStatement.setString(1,employee.getFirstName());
+            preparedStatement.setString(2,employee.getLastName());
+            preparedStatement.setString(3,employee.getEmail());
+            preparedStatement.setLong(4,employee.getPhoneNumber());
+            preparedStatement.setDouble(5,employee.getSalary());
+            preparedStatement.setDate(6, Date.valueOf(employee.
+                                         getDateOfJoining()));
+            preparedStatement.setDate(7, Date.valueOf(employee.
+                                         getDateOfBirth()));
+            preparedStatement.setString(8,employee.getGender());
+            preparedStatement.setString(9,employee.getRole());
+            count = preparedStatement.executeUpdate();
+
+            isUpdated = updateAddress(employee.getAddress(), employeeid);
+        } catch (SQLException e) {
+            throw new EMSException
+            ("Error occured while updating data, Try again", "ErrorCode 103");
+        } 
+        finally{
+            DBConnection.closeConnection();  
+        }     
+        if (count > 0 && isUpdated) {
+            isUpdated = true;
+        }  
+        return isUpdated;
+    }
+
+    /**
+     * Updates the address detail and returns true if successful.
+     *
+     * @param employeeid
+     * @return true if address is updated
+     */
+    public boolean updateAddress(Address address, int employeeid) throws EMSException {
+        boolean isUpdate= false;
+        int count = 0;
+        Connection connection = DBConnection.getConnection();
+        StringBuilder query = new StringBuilder();
+        query.append("update address set door_number = ?, street = ?,") 
+             .append("city = ?, state = ?, pin_code = ?, type = ?")
+             .append(" where employee_id = ")
+             .append(employeeid);
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                                                  query.toString());
+            preparedStatement.setString(1, address.getDoorNumber());
+            preparedStatement.setString(2, address.getStreet());
+            preparedStatement.setString(3, address.getCity());
+            preparedStatement.setString(4, address.getState());
+            preparedStatement.setInt(5, address.getPinCode());
+            preparedStatement.setString(6, address.getType());
+            count = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new EMSException
+            ("Error occured while updating data, Try again", "ErrorCode 103");
+        }
+        finally {
+           DBConnection.closeConnection(); 
+        }
+        if (count > 0) {
+            isUpdate = true;
+        }
+        return isUpdate;   
+    }
+
+    /**
+     * Search the employee detail and returns the employee details.
+     *
+     * @param firstName
+     * @return employee details wiith address.
+     */
+    public Employee searchEmployee(String firstName) throws EMSException {
+        Employee employee = null;
+        Connection connection = DBConnection.getConnection();
+
+        StringBuilder query = new StringBuilder();
+        query.append("select e.employee_id,e.first_name,e.last_name,e.email ,")
+             .append("e.phone_number,e.salary,e.date_of_joining, ")
+             .append("e.date_of_birth,e.gender,e.role,a.door_number, ")
+             .append("a.street,a.city,a.state,a.pin_code,a.type ")
+             .append(" from employee e join address a ")
+             .append("on e.employee_id = a.employee_id ")
+             .append(" where first_name = ")
+             .append("'").append(firstName).append("'");
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query.toString());
+
+             while (result.next()) {
+                int employeeId = result.getInt(1);
+                firstName = result.getString(2);
+                String lastName = result.getString(3);
+                String email = result.getString(4);
+                long phoneNumber = result.getLong(5);
+                double salary = result.getDouble(6);
+                LocalDate dateOfJoining = result.getDate(7).toLocalDate();
+                LocalDate dateOfBirth = result.getDate(8).toLocalDate();
+                String gender = result.getString(9);
+                String role = result.getString(10);
+                String doorNumber = result.getString(11);
+                String street = result.getString(12);
+                String city = result.getString(13);
+                String state = result.getString(14);
+                int pinCode = result.getInt(15);
+                String type = result.getString(16);
+
+                Address address = new Address(doorNumber, street, city,
+                                              state, pinCode, type);
+                employee = new Employee(employeeId, firstName,
+                                       lastName, email, phoneNumber, salary,
+                                       dateOfJoining, address, dateOfBirth,
+                                       gender, role);
+            }
+        } catch (SQLException e) {
+            throw new EMSException
+            ("Error occured while searching data, Try again", "ErrorCode 104");
+        } catch (NullPointerException e) {
+            System.out.println("Employee Data not found " );
+        }
+        finally {
+           DBConnection.closeConnection(); 
+        }
+        return employee;
+    }
+
+    /**
+     * Deletes the employee details and returns true if successful.
+     *
+     * @param employee name
+     * @return true if employee details are deleted.
+     */
+    public boolean deleteEmployee(int employeeId) throws EMSException {
+
+        int count = 0;        
+        boolean isDeleted= false;
+        Connection connection = DBConnection.getConnection();
+        StringBuilder query = new StringBuilder();
+        query.append("delete from employee ")
+             .append(" where employee_id = ")
+             .append(employeeId);
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                                                  query.toString());
+            count = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new EMSException
+            ("Error occured while deleting data, Try again", "ErrorCode 105");
+        }
+        finally {
+            DBConnection.closeConnection();
+        }
+        if (count > 0) {
+             isDeleted = true;
+        }
+        return isDeleted;
+    }                
 }

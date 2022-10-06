@@ -1,7 +1,7 @@
 package com.ideas2it.employee.util;
 
 import java.util.Scanner;
-import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 /**
  * Organizes the utility code segments.
@@ -9,13 +9,9 @@ import java.time.LocalDate;
  * @version 1.0 13-09-2022
  * @author Naveenkumar R
  */
-public class EmployeeManagementUtil {
+/*public class EmployeeManagementUtil {
 
-    Scanner scanner = new Scanner(System.in);
-
-    public LocalDate getDate() {
-        String date = scanner.nextLine();
-        LocalDate dateOfJoining = LocalDate.parse(date);
-        return dateOfJoining;
+    public static boolean isValid(String regexPattern, String fieldValue) {
+        return Pattern.matches(regexPattern, fieldValue);
     }
-}
+}*/

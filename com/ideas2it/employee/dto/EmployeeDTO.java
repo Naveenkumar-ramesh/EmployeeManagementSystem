@@ -11,7 +11,7 @@ import java.time.LocalDate;
  * @author Naveenkumar R
  */
 public class EmployeeDTO {
-    private long employeeId;
+    private int employeeId;
     private String firstName;
     private String lastName;
     private String email;
@@ -26,10 +26,12 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(String firstName, String lastName, String email,
-                       long phoneNumber, double salary,LocalDate dateOfJoining,
-                       AddressDTO address,LocalDate dateOfBirth,String gender, String role) {
+    public EmployeeDTO(int employeeId, String firstName, String lastName,
+                        String email,long phoneNumber, double salary,
+                        LocalDate dateOfJoining, AddressDTO address, 
+                        LocalDate dateOfBirth,String gender, String role) {
 
+        this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -42,11 +44,11 @@ public class EmployeeDTO {
         this.role = role;
     }
 
-    public long getEmployeeId() {
+    public int getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(long employeeId) {
+    public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
 
@@ -138,15 +140,16 @@ public class EmployeeDTO {
      */
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nFirst Name            : ").append(firstName)
-                     .append("\nLast Name             : ").append(lastName)
-                     .append("\nEmail                 : ").append(email)
-                     .append("\nPhoneNumber           : ").append(phoneNumber)
-                     .append("\nSalary                : ").append(salary)
-                     .append("\nDate Of Joining       : ").append(dateOfJoining)
-                     .append("\nDate Of Joining       : ").append(dateOfJoining)
-                     .append("\nGender                : ").append(gender)
-                     .append("\nRole                  : ").append(role)
+        stringBuilder.append("\nEmployee Id          : ").append(employeeId)
+                     .append("\nFirst Name           : ").append(firstName)
+                     .append("\nLast Name            : ").append(lastName)
+                     .append("\nEmail                : ").append(email)
+                     .append("\nPhoneNumber          : ").append(phoneNumber)
+                     .append("\nSalary               : ").append(salary)
+                     .append("\nDate Of Joining      : ").append(dateOfJoining)
+                     .append("\nDate Of Birth        : ").append(dateOfBirth)
+                     .append("\nGender               : ").append(gender)
+                     .append("\nRole                 : ").append(role)
                      .append(getAddress());
 
         return stringBuilder.toString();

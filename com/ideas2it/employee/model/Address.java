@@ -78,12 +78,12 @@ public class Address {
 
     public String toString() {
         StringBuilder stringBuilderAddress = new StringBuilder();
-        stringBuilderAddress.append("\nDoorNumber      : ").append(doorNumber)
-                            .append("\nStreet          : ").append(street)
-                            .append("\nCity            : ").append(city)
-                            .append("\nState           : ").append(state)
-                            .append("\nPincode         : ").append(pinCode)
-                            .append("\nType            : ").append(type);
+        stringBuilderAddress.append("\nDoorNumber            : ").append(doorNumber)
+                            .append("\nStreet                : ").append(street)
+                            .append("\nCity                  : ").append(city)
+                            .append("\nState                 : ").append(state)
+                            .append("\nPincode               : ").append(pinCode)
+                            .append("\nType                  : ").append(type);
 
         return stringBuilderAddress.toString();
     }

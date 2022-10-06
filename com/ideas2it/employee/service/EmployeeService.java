@@ -2,7 +2,9 @@ package com.ideas2it.employee.service;
 
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.exception.EMSException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Interface is used to declare the abstract method to service class
@@ -12,7 +14,15 @@ import java.util.List;
  */
 public interface EmployeeService {
 
-    
+    /**
+     * Compares if the detail matches the expectation
+     * and return true if it matches.
+     * 
+     * @param employee details
+     * @return Return the boolean value.
+     */
+    boolean validateField(String regexPattern, String fieldValue) ;  
+
     /**
      * Saves the employee details in above database
      * and return true if the process is successful.
@@ -20,7 +30,7 @@ public interface EmployeeService {
      * @param employee from controller
      * @return Return the boolean value.
      */
-    boolean addEmployee(EmployeeDTO employeeDTO);
+    boolean addEmployee(EmployeeDTO employeeDTO) throws EMSException;
 
     /**
      * Returns EmployeeDetail to be displayed.
@@ -28,7 +38,7 @@ public interface EmployeeService {
      * @param employee
      * @return Returns employee
      */
-    List<EmployeeDTO> displayEmployee();
+    List<EmployeeDTO> displayEmployee() throws EMSException;
 
     /**
      * Receives relevent employee details from database.
@@ -36,7 +46,7 @@ public interface EmployeeService {
      * @param Employee name
      * @return returns relevent employee details
      */
-    EmployeeDTO searchEmployee(String name);
+    EmployeeDTO searchEmployee(String firstName) throws EMSException;
 
     /**
      * Updates the employee detail and returns true if successful.
@@ -44,7 +54,7 @@ public interface EmployeeService {
      * @param employee
      * @return true if employee is updated
      */
-    boolean updateEmployee(EmployeeDTO employeeDTO);
+    boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException;
 
     /**
      * Deletes the employee details and returns true if successful.
@@ -52,6 +62,6 @@ public interface EmployeeService {
      * @param employee name
      * @return true if employee details are deleted.
      */
-    boolean deleteEmployee(String name);
+    boolean deleteEmployee(int employeeId) throws EMSException;
 
 }

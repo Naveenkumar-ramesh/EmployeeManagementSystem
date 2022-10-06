@@ -78,12 +78,18 @@ public class AddressDTO {
 
     public String toString() {
         StringBuilder stringBuilderAddress = new StringBuilder();
-        stringBuilderAddress.append("\nDoorNumber      : ").append(getDoorNumber())
-                            .append("\nStreet          : ").append(getStreet())
-                            .append("\nCity            : ").append(getCity())
-                            .append("\nState           : ").append(getState())
-                            .append("\nPincode         : ").append(getPinCode())
-                            .append("\nType            : ").append(getType());
+        stringBuilderAddress.append("\nDoorNumber            : ")
+                            .append(getDoorNumber())
+                            .append("\nStreet                : ")
+                            .append(getStreet())
+                            .append("\nCity                  : ")
+                            .append(getCity())
+                            .append("\nState                 : ")
+                            .append(getState())
+                            .append("\nPincode               : ")
+                            .append(getPinCode())
+                            .append("\nType                  : ")
+                            .append(getType());
 
         return stringBuilderAddress.toString();
     }
