@@ -6,6 +6,8 @@ import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
 import com.ideas2it.employee.view.EmployeeView;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -25,7 +27,6 @@ public class EmployeeController {
      */
     public boolean addEmployee(EmployeeDTO employeeDTO) throws EMSException {
         return employeeService.addEmployee(employeeDTO);
-
     }
 
     /**
@@ -43,7 +44,7 @@ public class EmployeeController {
      * @param Employee name
      * @return returns relevent employee details
      */
-    public EmployeeDTO searchEmployee(String firstName) throws EMSException {
+    public List<EmployeeDTO> searchEmployee(String firstName) throws EMSException {
         return employeeService.searchEmployee(firstName);
     }
 
@@ -75,6 +76,46 @@ public class EmployeeController {
      */
     public boolean validateField(String regexPattern, String fieldValue) {
         return employeeService.validateField(regexPattern, fieldValue);
+    }
+
+    /**
+     * Transfers birth date and joining date to be valedated.
+     *
+     * @param birth date and joining date
+     * @return true if joining date is valid.
+     */
+    public boolean validateJoiningDate(LocalDate dateOfBirth,LocalDate dateOfJoining) {
+        return employeeService.validateJoiningDate(dateOfBirth,dateOfJoining);
+    }
+
+    /**
+     * Transfers birth date to be valedated.
+     *
+     * @param birth date
+     * @return true if birth date is valid.
+     */
+    public boolean validateBirthDate(LocalDate dateOfBirth) {
+        return employeeService.validateBirthDate(dateOfBirth);
+    }
+
+    /**
+     * Transfers email id to be valedated.
+     *
+     * @param email id
+     * @return true if email id is valid.
+     */
+    public boolean validateEmail(String email) throws EMSException {
+        return employeeService.validateEmail(email);
+    }
+
+    /**
+     * Transfers phoneNumber to be valedated.
+     *
+     * @param phoneNumber
+     * @return true if phoneNumber is valid.
+     */
+    public boolean validatePhoneNumber(long phoneNumber) throws EMSException {
+        return employeeService.validatePhoneNumber(phoneNumber);
     }
 
 }

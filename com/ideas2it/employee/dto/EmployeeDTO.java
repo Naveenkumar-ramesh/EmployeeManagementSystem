@@ -3,6 +3,8 @@ package com.ideas2it.employee.dto;
 import com.ideas2it.employee.dto.AddressDTO;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * It presents employee details
@@ -18,7 +20,7 @@ public class EmployeeDTO {
     private long phoneNumber;
     private double salary;
     private LocalDate dateOfJoining;
-    private AddressDTO address;
+    private List<AddressDTO> addresses;
     private LocalDate dateOfBirth;
     private String gender;
     private String role;
@@ -28,7 +30,7 @@ public class EmployeeDTO {
 
     public EmployeeDTO(int employeeId, String firstName, String lastName,
                         String email,long phoneNumber, double salary,
-                        LocalDate dateOfJoining, AddressDTO address, 
+                        LocalDate dateOfJoining, List<AddressDTO> addresses, 
                         LocalDate dateOfBirth,String gender, String role) {
 
         this.employeeId = employeeId;
@@ -38,7 +40,7 @@ public class EmployeeDTO {
         this.phoneNumber = phoneNumber;
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
-        this.address = address;
+        this.addresses = addresses;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.role = role;
@@ -100,12 +102,12 @@ public class EmployeeDTO {
         this.dateOfJoining = dateOfJoining;
     }
 
-    public AddressDTO getAddress() {
-        return address;
+    public List<AddressDTO> getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(AddressDTO address) {
-        this.address = address;
+    public void setAddresses(List<AddressDTO> addresses) {
+        this.addresses = addresses;
     }
 
     public LocalDate getDateOfBirth() {
@@ -140,7 +142,8 @@ public class EmployeeDTO {
      */
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nEmployee Id          : ").append(employeeId)
+        stringBuilder.append("\n\n**********Employee Details************ \n")
+                     .append("\nEmployee Id          : ").append(employeeId)
                      .append("\nFirst Name           : ").append(firstName)
                      .append("\nLast Name            : ").append(lastName)
                      .append("\nEmail                : ").append(email)
@@ -150,7 +153,8 @@ public class EmployeeDTO {
                      .append("\nDate Of Birth        : ").append(dateOfBirth)
                      .append("\nGender               : ").append(gender)
                      .append("\nRole                 : ").append(role)
-                     .append(getAddress());
+                     .append("\n       Address Details \n")
+                     .append(getAddresses());
 
         return stringBuilder.toString();
     }

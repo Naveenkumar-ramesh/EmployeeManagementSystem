@@ -3,6 +3,8 @@ package com.ideas2it.employee.model;
 import com.ideas2it.employee.model.Address;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * It presents employee details
@@ -18,7 +20,7 @@ public class Employee {
     private long phoneNumber;
     private double salary;
     private LocalDate dateOfJoining;
-    private Address address;
+    private List<Address> addresses;
     private LocalDate dateOfBirth;
     private String gender;
     private String role;
@@ -28,7 +30,7 @@ public class Employee {
 
     public Employee(int employeeId, String firstName,String lastName,
                     String email, long phoneNumber,double salary,
-                    LocalDate dateOfJoining, Address address,
+                    LocalDate dateOfJoining, List<Address> addresses,
                     LocalDate dateOfBirth, String gender, String role)
     {
         this.employeeId = employeeId;
@@ -38,7 +40,7 @@ public class Employee {
         this.phoneNumber = phoneNumber;
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
-        this.address = address;
+        this.addresses = addresses;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.role = role;
@@ -101,12 +103,12 @@ public class Employee {
         this.dateOfJoining = dateOfJoining;
     }
 
-    public Address getAddress() {
-        return address;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     public LocalDate getDateOfBirth() {
@@ -147,12 +149,11 @@ public class Employee {
                      .append("\nEmail                 : ").append(email)
                      .append("\nPhoneNumber           : ").append(phoneNumber)
                      .append("\nSalary                : ").append(salary)
-                     .append("\nDate Of Joining       : ")
-                     .append(dateOfJoining)
-                     .append(getAddress())
-                     .append("\nDate Of Birth       : ").append(dateOfBirth)
+                     .append("\nDate Of Joining       : ").append(dateOfJoining)
+                     .append("\nDate Of Birth         : ").append(dateOfBirth)
                      .append("\nGender                : ").append(gender)
-                     .append("\nRole                  : ").append(role);
+                     .append("\nRole                  : ").append(role)
+                     .append(getAddresses());
 
         return stringBuilder.toString();
     }

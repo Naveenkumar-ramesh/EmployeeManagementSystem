@@ -3,7 +3,7 @@ package com.ideas2it.employee.dao;
 import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.util.connection.DBConnection;
+import com.ideas2it.employee.util.connection.ConnectionUtil;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public interface Dao {
      * @param employee from controller
      * @return Return the boolean value.
      */
-    boolean addAddress(Address address, int employeeid) throws EMSException ;
+    boolean addAddress(List<Address> addresses, int employeeid) throws EMSException ;
 
     /**
      * Returns EmployeeDetail to be displayed.
@@ -54,7 +54,7 @@ public interface Dao {
      * @param employee
      * @return true if employee is updated
      */
-    boolean updateAddress(Address address, int employeeid) throws EMSException;
+    boolean updateAddress(List<Address> addresses, int employeeid) throws EMSException;
 
     /**
      * Search the employee detail and returns the employee details.
@@ -62,7 +62,7 @@ public interface Dao {
      * @param firstName
      * @return employee details wiith address.
      */
-    Employee searchEmployee(String firstName) throws EMSException ;
+    List<Employee> searchEmployee(String firstName) throws EMSException ;
 
     /**
      * Deletes the employee details and returns true if successful.

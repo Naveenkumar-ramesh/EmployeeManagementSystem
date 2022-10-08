@@ -3,6 +3,8 @@ package com.ideas2it.employee.service;
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
 import com.ideas2it.employee.exception.EMSException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -46,7 +48,7 @@ public interface EmployeeService {
      * @param Employee name
      * @return returns relevent employee details
      */
-    EmployeeDTO searchEmployee(String firstName) throws EMSException;
+    List<EmployeeDTO> searchEmployee(String firstName) throws EMSException;
 
     /**
      * Updates the employee detail and returns true if successful.
@@ -63,5 +65,37 @@ public interface EmployeeService {
      * @return true if employee details are deleted.
      */
     boolean deleteEmployee(int employeeId) throws EMSException;
+
+    /**
+     * Checks the validity of the joining date with birth date.
+     *
+     * @param dateOfBirth and dateOfJoining
+     * @return true if joining date is valid
+     */
+    boolean validateJoiningDate(LocalDate dateOfBirth,LocalDate dateOfJoining);
+
+    /**
+     * Checks the validity of the birth date .
+     *
+     * @param dateOfBirth 
+     * @return true if birth date is valid
+     */
+    boolean validateBirthDate(LocalDate dateOfBirth);
+
+    /**
+     * Check the validity of the email id.
+     *
+     * @param email id
+     * @return true if email id is valid.
+     */
+    boolean validateEmail(String email) throws EMSException;
+
+    /**
+     * Check the validity of the Phone number.
+     *
+     * @param Phone number
+     * @return true if Phone number is valid.
+     */
+    boolean validatePhoneNumber(long phoneNumber) throws EMSException;
 
 }

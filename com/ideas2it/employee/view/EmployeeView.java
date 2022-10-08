@@ -8,6 +8,7 @@ import com.ideas2it.employee.exception.EMSException;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.InputMismatchException;
 import java.lang.NumberFormatException;
 import java.time.DateTimeException;
@@ -36,10 +37,9 @@ public class EmployeeView {
     public void chooseOperation() {
 
         int loopExit = 1;
-
         while (loopExit != 0) {
             try {
-                System.out.println("Enter the opertaion to be done \na.CREATE"
+                System.out.println("Enter the opertaion to be done \n\na.CREATE"
                                    + "\nb.Display \nc.SEARCH "
                                    + "\nd.UPDATE \ne.DELETE \nf.EXIT");
                 String choice = scanner.nextLine();
@@ -83,7 +83,7 @@ public class EmployeeView {
      */
     public void createEmployee() {
         boolean isValid;
-
+        List<AddressDTO> addressDTOs = new ArrayList<>();
         System.out.println(EmployeeManagementConstant.VALID_DETAILS);
         try {
 
@@ -93,15 +93,22 @@ public class EmployeeView {
             String email = getEmail();
             long phoneNumber = getPhoneNumber();
             double salary = getSalary();
-            LocalDate dateOfJoining = getDateOfJoining();
             LocalDate dateOfBirth = getDateOfBirth();
+            LocalDate dateOfJoining = getDateOfJoining(dateOfBirth);
             String gender = getName("Gender");
             String role = getName("Role");
+            System.out.println("  Enter valid Address Details");
 
             AddressDTO address = addAddress();
+            addressDTOs.add(address);
+            address = addAnotherAddress();
+
+            if (address != null)   {
+                addressDTOs.add(address);
+            }
             employeeDTO = new EmployeeDTO(employeeId, firstName, lastName,
                                           email, phoneNumber, salary,
-                                          dateOfJoining, address,dateOfBirth,
+                                          dateOfJoining, addressDTOs,dateOfBirth,
                                           gender, role);
 
             if (employeeController.addEmployee(employeeDTO)) {
@@ -115,6 +122,7 @@ public class EmployeeView {
         }
     }
 
+
     /**
      * Combine the seperate address details 
      * and provides organised address.
@@ -122,11 +130,11 @@ public class EmployeeView {
      */
     public AddressDTO addAddress() {
 
+        String type = getAddressDetail("Address type");
         String doorNumber = getDoorNumber();
         String street = getAddressDetail("Street Name");
         String city = getAddressDetail("City Name");
         String state = getAddressDetail("State Name");
-        String type = getAddressDetail("Address type");
         int pinCode = getPinCode();
 
         AddressDTO address = new AddressDTO(doorNumber, street,
@@ -164,11 +172,15 @@ public class EmployeeView {
         String firstName = getName("First Name");
 
         try {
-            EmployeeDTO selectEmployee = employeeController.searchEmployee(firstName);
-            if (selectEmployee != null) {
-                System.out.println(selectEmployee);
+            List<EmployeeDTO> employees = employeeController.searchEmployee(firstName);
+            if(!(employees.isEmpty())) {
+                Iterator<EmployeeDTO> iterator = employees.iterator();
+                while (iterator.hasNext()) {
+                    EmployeeDTO employeeDTO = iterator.next();
+                    System.out.println(employeeDTO);
+                }
             } else {
-                System.out.println("Not found the Employee");
+                System.out.println("No Employee details found ");
             }
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
@@ -184,24 +196,31 @@ public class EmployeeView {
      */
     public void updateEmployee() {
         boolean isValid;
+        List<AddressDTO> addressDTOs = new ArrayList<>();
         EmployeeDTO employeeDTO = new EmployeeDTO();
 
-        System.out.print(EmployeeManagementConstant.EMPLOYEE_ID);
-        int employeeId = Integer.parseInt(scanner.nextLine());
-
+        int employeeId = getId();
         String firstName = getName("First Name");
         String lastName = getName("Last Name");
         String email = getEmail();
         long phoneNumber = getPhoneNumber();
         double salary = getSalary();
-        LocalDate dateOfJoining = getDateOfJoining();
         LocalDate dateOfBirth = getDateOfBirth();
+        LocalDate dateOfJoining = getDateOfJoining(dateOfBirth);
         String gender = getName("Gender");
         String role = getName("Role");
+        System.out.println("  Enter valid Address Details");
+
         AddressDTO address = addAddress();
+        addressDTOs.add(address);
+        address = addAnotherAddress();
+
+        if (address != null)   {
+            addressDTOs.add(address);
+        }
         employeeDTO = new EmployeeDTO(employeeId, firstName, lastName,
                                       email, phoneNumber,salary, dateOfJoining,
-                                      address, dateOfBirth, gender, role);
+                                      addressDTOs, dateOfBirth, gender, role);
 
         try {
             if (employeeController.updateEmployee(employeeDTO)) {
@@ -264,15 +283,23 @@ public class EmployeeView {
      * @return Email id of the employee.
      */
     public String getEmail() {
-        String email;
-        boolean isValid;
+        String email = null;
+        boolean isValid = false;
         do {
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_EMAIL);
-            email = scanner.nextLine();
-            isValid = employeeController.validateField(
-                              EmployeeManagementConstant.REGEX_EMAIL, email);
-            if (!(isValid)) {
-                System.out.println(EmployeeManagementConstant.VALID_EMAIL);
+            try {
+                System.out.print(EmployeeManagementConstant.EMPLOYEE_EMAIL);
+                email = scanner.nextLine();
+                isValid = employeeController.validateField(
+                                  EmployeeManagementConstant.REGEX_EMAIL, email);
+
+                if (isValid) {
+                    isValid = employeeController.validateEmail(email);
+                }
+                if (!(isValid)) {
+                     System.out.println(EmployeeManagementConstant.VALID_EMAIL);
+                }
+            } catch (EMSException e) {
+                System.out.println(e.getErrorCode() + " " + e.getMessage());
             }
         } while(!(isValid));
         return email;
@@ -286,16 +313,27 @@ public class EmployeeView {
      * @return Contact number of the employee.
      */
     public long getPhoneNumber() {
-        long phoneNumber;
-        boolean isValid;
+        long phoneNumber = 0;
+        boolean isValid = false;
         do {
-            System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
-            phoneNumber = Long.parseLong(scanner.nextLine());
-            isValid = employeeController.validateField(
-                              EmployeeManagementConstant.REGEX_NUMBER,
-                              Long.toString(phoneNumber));
-            if (!(isValid)) {
-                System.out.println(EmployeeManagementConstant.VALID_NUMBER);
+            try {
+                System.out.print(EmployeeManagementConstant.EMPLOYEE_NUMBER);
+                phoneNumber = Long.parseLong(scanner.nextLine());
+                isValid = employeeController.validateField(
+                                  EmployeeManagementConstant.REGEX_NUMBER,
+                                  Long.toString(phoneNumber));
+
+                if (isValid) {
+                    isValid = employeeController.validatePhoneNumber(phoneNumber);
+                }
+                if (!(isValid)) {
+                    System.out.println(EmployeeManagementConstant.VALID_NUMBER);
+                }
+            } catch (EMSException e) {
+               System.out.println(e.getErrorCode() + " " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid Phone number");
+                isValid = false;
             }
         } while(!(isValid));
         return phoneNumber;
@@ -393,19 +431,24 @@ public class EmployeeView {
      *
      * @return Date of joining of the employee.
      */
-    public LocalDate getDateOfJoining() {
+    public LocalDate getDateOfJoining(LocalDate dateOfBirth) {
         LocalDate dateOfJoining = null;
         boolean isValid;
         do {
             System.out.print(EmployeeManagementConstant.EMPLOYEE_DOJ);
             try {
                 dateOfJoining = LocalDate.parse(scanner.nextLine());
-                isValid = false;
-            } catch (DateTimeException exception) {
-                System.out.println(" Enter valid date : ");
                 isValid = true;
+            } catch (DateTimeException exception) {
+                isValid = false;
             }
-        } while (isValid);
+            if (isValid) {
+                isValid = employeeController.validateJoiningDate(dateOfBirth, dateOfJoining);
+            }
+            if (!(isValid)) {
+                System.out.println("  Invalid Joining Date ");
+            }
+        } while (!(isValid));
         return dateOfJoining;
     }
 
@@ -423,12 +466,17 @@ public class EmployeeView {
             System.out.print(EmployeeManagementConstant.EMPLOYEE_DOB);
             try {
                 dateOfBirth = LocalDate.parse(scanner.nextLine());
-                isValid = false;
-            } catch (DateTimeException exception) {
-                System.out.println(" Enter valid date : ");
                 isValid = true;
+            } catch (DateTimeException exception) {
+                isValid = false;
             }
-        } while (isValid);
+            if (isValid) {
+                isValid = employeeController.validateBirthDate(dateOfBirth);
+            }
+            if (!(isValid)) {
+                System.out.println("Invalid Birth Date");
+            }
+        } while (!(isValid));
         return dateOfBirth;
     }
 
@@ -473,6 +521,33 @@ public class EmployeeView {
             }
         } while (!(isValid));
         return name;
+    }
+
+    /**
+     * Get's another employee address if any to be added
+     *
+     * @return address
+     */
+    public AddressDTO addAnotherAddress() {
+        boolean isValid = false;
+        AddressDTO address = null;
+
+        do {
+            System.out.println("Do you wish to add another Address (Y or N) ?");
+            String choice = scanner.nextLine();
+
+            if (choice.equals("Y") || choice.equals("y")) {
+                address = addAddress();
+                isValid = true;
+            } else if (choice .equals("N") || choice.equals("n")) {
+                System.out.println("No second address added");
+                isValid = true;
+            } else {
+                System.out.println("Invalid choice");
+                isValid = false;
+            }
+        }while (!(isValid));
+        return address;
     }
                 
 }

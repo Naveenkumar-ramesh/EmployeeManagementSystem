@@ -5,6 +5,9 @@ import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.dto.EmployeeDTO;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Converts DTO Employee details to model Employee details and 
  * model Employee details to DTO Employee details.
@@ -22,6 +25,7 @@ public class EmployeeMapper {
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = null;
+        List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();;
 
         if (null != employee) {
             employeeDTO = new EmployeeDTO();
@@ -32,12 +36,17 @@ public class EmployeeMapper {
             employeeDTO.setPhoneNumber(employee.getPhoneNumber());
             employeeDTO.setSalary(employee.getSalary());
             employeeDTO.setDateOfJoining(employee.getDateOfJoining());
-            employeeDTO.setAddress(toAddressDTO(employee.getAddress()));
+
+            if (null != employee.getAddresses()) {
+                for (Address address : employee.getAddresses()) {
+                    addressDTOs.add(toAddressDTO(address));
+                }
+                employeeDTO.setAddresses(addressDTOs);
+            }
             employeeDTO.setDateOfBirth(employee.getDateOfBirth());
             employeeDTO.setGender(employee.getGender());
             employeeDTO.setRole(employee.getRole());
         }
-
         return employeeDTO;
     }
 
@@ -50,21 +59,28 @@ public class EmployeeMapper {
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
+        List<Address> addresses = new ArrayList<Address>();
 
-        employee.setEmployeeId(employeeDTO.getEmployeeId());
-        employee.setFirstName(employeeDTO.getFirstName());
-        employee.setLastName(employeeDTO.getLastName());
-        employee.setEmail(employeeDTO.getEmail());
-        employee.setPhoneNumber(employeeDTO.getPhoneNumber());
-        employee.setSalary(employeeDTO.getSalary());
-        employee.setDateOfJoining(employeeDTO.getDateOfJoining());
-        employee.setAddress(toAddress(employeeDTO.getAddress()));
-        employee.setDateOfBirth(employeeDTO.getDateOfBirth());
-        employee.setGender(employeeDTO.getGender());
-        employee.setRole(employeeDTO.getRole());
+        if (null != employeeDTO) {
+            employee.setEmployeeId(employeeDTO.getEmployeeId());
+            employee.setFirstName(employeeDTO.getFirstName());
+            employee.setLastName(employeeDTO.getLastName());
+            employee.setEmail(employeeDTO.getEmail());
+            employee.setPhoneNumber(employeeDTO.getPhoneNumber());
+            employee.setSalary(employeeDTO.getSalary());
+            employee.setDateOfJoining(employeeDTO.getDateOfJoining());
+            employee.setDateOfBirth(employeeDTO.getDateOfBirth());
+            employee.setGender(employeeDTO.getGender());
+            employee.setRole(employeeDTO.getRole());
 
+            if (null != employeeDTO.getAddresses()) {
+                for (AddressDTO address : employeeDTO.getAddresses()) {
+                    addresses.add(toAddress(address));
+                }
+                employee.setAddresses(addresses);
+            }
+        }
         return employee;
-
     }
 
     /**
