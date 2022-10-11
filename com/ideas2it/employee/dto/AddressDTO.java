@@ -1,4 +1,4 @@
-package com.ideas2it.employee.model;
+package com.ideas2it.employee.dto;
 
 /**
  * It presents employee address.
@@ -6,7 +6,7 @@ package com.ideas2it.employee.model;
  * @version 2.0 13-09-2022
  * @author Naveenkumar R
  */
-public class Address {
+public class AddressDTO {
     private String doorNumber;
     private String street;
     private String city;
@@ -14,11 +14,12 @@ public class Address {
     private int pinCode;
     private String type;
 
-    public Address() {
+    public AddressDTO() {
     }
 
-    public Address(String doorNumber, String street, String city,
+    public AddressDTO(String doorNumber, String street, String city,
                            String state, int pinCode, String type) {
+
         this.doorNumber = doorNumber;
         this.street = street;
         this.city = city;
@@ -67,7 +68,6 @@ public class Address {
         this.pinCode = pinCode;
     }
 
-
     public String getType() {
         return type;
     }
@@ -78,12 +78,18 @@ public class Address {
 
     public String toString() {
         StringBuilder stringBuilderAddress = new StringBuilder();
-        stringBuilderAddress.append("\nDoorNumber            : ").append(doorNumber)
-                            .append("\nStreet                : ").append(street)
-                            .append("\nCity                  : ").append(city)
-                            .append("\nState                 : ").append(state)
-                            .append("\nPincode               : ").append(pinCode)
-                            .append("\nType                  : ").append(type);
+        stringBuilderAddress.append("\n\nType                  : ")
+                            .append(getType())
+                            .append("\nDoorNumber            : ")
+                            .append(getDoorNumber())
+                            .append("\nStreet                : ")
+                            .append(getStreet())
+                            .append("\nCity                  : ")
+                            .append(getCity())
+                            .append("\nState                 : ")
+                            .append(getState())
+                            .append("\nPincode               : ")
+                            .append(getPinCode());
 
         return stringBuilderAddress.toString();
     }

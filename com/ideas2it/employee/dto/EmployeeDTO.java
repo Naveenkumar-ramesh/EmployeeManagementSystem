@@ -1,6 +1,6 @@
-package com.ideas2it.employee.model;
+package com.ideas2it.employee.dto;
 
-import com.ideas2it.employee.model.Address;
+import com.ideas2it.employee.dto.AddressDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
-public class Employee {
+public class EmployeeDTO {
     private int employeeId;
     private String firstName;
     private String lastName;
@@ -20,19 +20,19 @@ public class Employee {
     private long phoneNumber;
     private double salary;
     private LocalDate dateOfJoining;
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
     private LocalDate dateOfBirth;
     private String gender;
     private String role;
 
-    public Employee() {
+    public EmployeeDTO() {
     }
 
-    public Employee(int employeeId, String firstName,String lastName,
-                    String email, long phoneNumber,double salary,
-                    LocalDate dateOfJoining, List<Address> addresses,
-                    LocalDate dateOfBirth, String gender, String role)
-    {
+    public EmployeeDTO(int employeeId, String firstName, String lastName,
+                        String email,long phoneNumber, double salary,
+                        LocalDate dateOfJoining, List<AddressDTO> addresses, 
+                        LocalDate dateOfBirth,String gender, String role) {
+
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,7 +45,6 @@ public class Employee {
         this.gender = gender;
         this.role = role;
     }
-
 
     public int getEmployeeId() {
         return employeeId;
@@ -103,11 +102,11 @@ public class Employee {
         this.dateOfJoining = dateOfJoining;
     }
 
-    public List<Address> getAddresses() {
+    public List<AddressDTO> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(List<AddressDTO> addresses) {
         this.addresses = addresses;
     }
 
@@ -143,16 +142,18 @@ public class Employee {
      */
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\nEmployee Id           : ").append(employeeId)
-                     .append("\nFirst Name            : ").append(firstName)
-                     .append("\nLast Name             : ").append(lastName)
-                     .append("\nEmail                 : ").append(email)
-                     .append("\nPhoneNumber           : ").append(phoneNumber)
-                     .append("\nSalary                : ").append(salary)
-                     .append("\nDate Of Joining       : ").append(dateOfJoining)
-                     .append("\nDate Of Birth         : ").append(dateOfBirth)
-                     .append("\nGender                : ").append(gender)
-                     .append("\nRole                  : ").append(role)
+        stringBuilder.append("\n\n**********Employee Details************ \n")
+                     .append("\nEmployee Id          : ").append(employeeId)
+                     .append("\nFirst Name           : ").append(firstName)
+                     .append("\nLast Name            : ").append(lastName)
+                     .append("\nEmail                : ").append(email)
+                     .append("\nPhoneNumber          : ").append(phoneNumber)
+                     .append("\nSalary               : ").append(salary)
+                     .append("\nDate Of Joining      : ").append(dateOfJoining)
+                     .append("\nDate Of Birth        : ").append(dateOfBirth)
+                     .append("\nGender               : ").append(gender)
+                     .append("\nRole                 : ").append(role)
+                     .append("\n       Address Details \n")
                      .append(getAddresses());
 
         return stringBuilder.toString();
