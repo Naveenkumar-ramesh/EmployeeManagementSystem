@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;  
 import java.sql.ResultSet;  
 import java.sql.SQLException;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Provides connection between database and application.
@@ -17,6 +19,7 @@ import java.sql.SQLException;
  */
 public class ConnectionUtil {
 
+    static Logger logger = LogManager.getLogger(ConnectionUtil.class);
     private static Connection connection = null;
     private static ConnectionUtil dbConnection = null;
     private static final String URL = "jdbc:mysql://localhost:3306/employee_management_application";
@@ -47,6 +50,7 @@ public class ConnectionUtil {
                 connection = DriverManager.getConnection(URL, user, password);
             }
         } catch (ClassNotFoundException e) {
+            logger.fatal("Cannot connect database");
             throw new EMSException
             ("Cannot connect database", "ErrorCode 107");
         } catch (SQLException e) { 
@@ -66,8 +70,9 @@ public class ConnectionUtil {
                connection.close();
            }
        } catch (SQLException e) { 
+            logger.fatal("Connection cannot be closed");
             throw new EMSException
-            ("Error occured in inserting data, Try again", "ErrorCode 101");
+            ("Connection cannot be closed", "ErrorCode 108");
        }
     }
 }

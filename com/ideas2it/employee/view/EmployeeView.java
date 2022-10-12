@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Get's the Employee details , organizes and saves them to database .
@@ -28,6 +30,7 @@ public class EmployeeView {
 
     Scanner scanner = new Scanner(System.in);
     EmployeeController employeeController = new EmployeeController();
+    static Logger logger = LogManager.getLogger(EmployeeView.class);
     EmployeeDTO employeeDTO = new EmployeeDTO();
 
     /**
@@ -72,7 +75,7 @@ public class EmployeeView {
                         System.out.println("Try Again");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Enter the valid choice");
+                System.out.println("Invalid choice");
             }
         }
     }
@@ -112,6 +115,7 @@ public class EmployeeView {
                                           gender, role);
 
             if (employeeController.addEmployee(employeeDTO)) {
+                logger.info("Employee Details Added");
                 System.out.println("Employee Details Added");
             } else {
                 System.out.println("Employee Details  Not Added...Try Again");
@@ -157,6 +161,7 @@ public class EmployeeView {
                     System.out.println(employeeDTO);
                 }
             } else {
+                logger.info("No Employee details found ");
                 System.out.println("No Employee details found ");
             }
         } catch (EMSException e) {
@@ -172,14 +177,19 @@ public class EmployeeView {
         String firstName = getName("First Name");
 
         try {
-            List<EmployeeDTO> employees = employeeController.searchEmployee(firstName);
+            List<EmployeeDTO> employees = employeeController.
+                                           searchEmployee(firstName);
             if(!(employees.isEmpty())) {
                 Iterator<EmployeeDTO> iterator = employees.iterator();
                 while (iterator.hasNext()) {
                     EmployeeDTO employeeDTO = iterator.next();
                     System.out.println(employeeDTO);
                 }
+                logger.info("Employee details found for First Name = " +
+                             firstName);
             } else {
+                logger.info("No Employee details found for First Name = " +
+                             firstName);
                 System.out.println("No Employee details found ");
             }
         } catch (EMSException e) {
@@ -224,7 +234,8 @@ public class EmployeeView {
 
         try {
             if (employeeController.updateEmployee(employeeDTO)) {
-                System.out.println("Employee details has been added");
+                logger.info("Employee details has been updated");
+                System.out.println("Employee details has been updated");
             }
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
@@ -240,9 +251,11 @@ public class EmployeeView {
         int employeeId = getId();
         try {
             if (employeeController.deleteEmployee(employeeId) != false) {
+                logger.info("Employee details deleted for ID = " + employeeId);
                 System.out.println("Employee details deleted");
             } else {
-                System.out.println("Employee details not deleted");
+                logger.info("No Employee details found for ID = " + employeeId);
+                System.out.println("No Employee details found ");
             }
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
@@ -269,7 +282,7 @@ public class EmployeeView {
 
             if (!(isValid)) {
                 System.out.println(EmployeeManagementConstant.
-                                   VALID_DOOR_NUMBER);
+                                       VALID_DOOR_NUMBER);
             }
         } while(!(isValid));
         return doorNumber;

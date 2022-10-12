@@ -38,7 +38,7 @@ public class EmployeeManagementConstant {
     public static final String REGEX_SALARY = "^[0-9]{3,}([.]{1}[0-9]{2})?$";
     public static final String REGEX_ADDRESS = "^[a-zA-Z]{2,15}([ ]?[a-zA-Z]{0,15}){0,}$";
     public static final String REGEX_PINCODE = "^([0-9]{6})$";
-    public static final String REGEX_DOOR_NUMBER = "^[1-9](?:[.\\-_]?(?:[a-zA-Z]{1,2}+|[1-9]))?$";
+    public static final String REGEX_DOOR_NUMBER = "^[a-zA-Z0-9/]{1,10}$";
     public static final String REGEX_EMAIL = "^[a-zA-Z]{1}[0-9a-zA-Z]{0,15}?[.\\-_]"
                                             .concat("?[a-zA-Z0-9]{1,20}")
                                             .concat("[@][a-z]{1,20}[a-z0-9]")

@@ -16,6 +16,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 
 /**
  * Implements transfer of employee details from database and
@@ -26,6 +29,8 @@ import java.util.ArrayList;
  */
 public class EmployeeDao implements Dao {
     ConnectionUtil dbConnection = ConnectionUtil.getDBConnection();
+    static Logger logger = LogManager.getLogger(EmployeeDao.class);
+
     /**
      * Saves the employee details in above database
      * and return true if the process is successful.
@@ -38,6 +43,7 @@ public class EmployeeDao implements Dao {
         boolean isAdded = false;
         PreparedStatement preparedStatement = null;
         Connection connection = dbConnection.getConnection();
+        int employeeid = 0;
         int count = 0;
 
         try {
@@ -62,13 +68,13 @@ public class EmployeeDao implements Dao {
             PreparedStatement statementId = connection.prepareStatement(query);
             statementId.setString(1, employee.getEmail());
             ResultSet result = statementId.executeQuery();       
-            int employeeid = 0;
 
             while (result.next()) {
                 employeeid = result.getInt(1);
             }
             isAdded = addAddress(employee.getAddresses(), employeeid); 
         } catch (SQLException e) { 
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured in inserting data, Try again", "ErrorCode 101");
         } finally {
@@ -76,6 +82,8 @@ public class EmployeeDao implements Dao {
         }  
         if (count > 0 && isAdded) {
             isAdded = true;
+        } else {
+            logger.warn("Employee not added for ID = " + employeeid);
         }
         return isAdded;  
     }
@@ -109,6 +117,7 @@ public class EmployeeDao implements Dao {
                 count = preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured in inserting data, Try again", "ErrorCode 101");
         } finally {
@@ -177,6 +186,7 @@ public class EmployeeDao implements Dao {
                 employees.add(employee);
             }
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured while retreving data, Try again", "ErrorCode 102");
         } finally {
@@ -222,6 +232,7 @@ public class EmployeeDao implements Dao {
 
             isUpdated = updateAddress(employee.getAddresses(), employeeid);
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured while updating data, Try again", "ErrorCode 103");
         } finally{
@@ -262,6 +273,7 @@ public class EmployeeDao implements Dao {
                 count = preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured while updating data, Try again", "ErrorCode 103");
         } finally {
@@ -330,6 +342,7 @@ public class EmployeeDao implements Dao {
                 employees.add(employee);
             }
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured while retreving data, Try again", "ErrorCode 102");
         } finally {
@@ -359,6 +372,7 @@ public class EmployeeDao implements Dao {
                                                   query.toString());
             count = preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new EMSException
             ("Error occured while deleting data, Try again", "ErrorCode 105");
         } finally {
