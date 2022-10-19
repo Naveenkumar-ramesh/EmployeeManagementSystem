@@ -25,7 +25,7 @@ public class EmployeeMapper {
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = null;
-        List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();;
+        List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
 
         if (null != employee) {
             employeeDTO = new EmployeeDTO();

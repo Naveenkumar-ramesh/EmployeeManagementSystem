@@ -1,78 +1,44 @@
 package com.ideas2it.employee.util.connection;
 
-import com.ideas2it.employee.exception.EMSException;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;  
-import java.sql.ResultSet;  
-import java.sql.SQLException;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 /**
- * Provides connection between database and application.
- * With this connection we can manipulate the data in database.
- * 
- * @version 2.0 28-09-2022.
- * @author  Naveenkumar R.
+ * Makes connection between database and the application .
+ * @author Naveenkumar
  */
 public class ConnectionUtil {
 
-    static Logger logger = LogManager.getLogger(ConnectionUtil.class);
-    private static Connection connection = null;
-    private static ConnectionUtil dbConnection = null;
-    private static final String URL = "jdbc:mysql://localhost:3306/employee_management_application";
-    private static final String user = "root";
-    private static final String password = "Naveen@1998";
+    private static SessionFactory sessionFactory;
 
-    private ConnectionUtil() {}
-
-    /**
-     * Creates connection between database and application.
-     * @return dbconnection
-     */
-    public static ConnectionUtil getDBConnection() {
-        if (dbConnection == null) {
-            dbConnection = new ConnectionUtil();
-        }
-        return dbConnection;
+    private ConnectionUtil() {
     }
 
     /**
-     * Creates connection between database and application.
+     * Creates connection between the database and application.
      */
-    public Connection getConnection() throws EMSException {
-
+    public static SessionFactory getSessionFactory() {
         try {
-            if (connection == null || connection.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(URL, user, password);
+            if(sessionFactory == null) {
+                sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
             }
-        } catch (ClassNotFoundException e) {
-            logger.fatal("Cannot connect database");
-            throw new EMSException
-            ("Cannot connect database", "ErrorCode 107");
-        } catch (SQLException e) { 
-            throw new EMSException
-            ("Cannot connect database", "ErrorCode 107");
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
-        return connection;
+         return sessionFactory;
     }
 
     /**
-     * Closes connection between database and application.
+     * Closes the connection between the database and application.
      */
-    public void closeConnection() throws EMSException {
-
-       try {
-           if (connection != null) {
-               connection.close();
-           }
-       } catch (SQLException e) { 
-            logger.fatal("Connection cannot be closed");
-            throw new EMSException
-            ("Connection cannot be closed", "ErrorCode 108");
-       }
+    public void closeConnection() {
+        try {
+            if(sessionFactory != null) {
+                sessionFactory.close();
+            }
+        } catch(HibernateException e) {
+            e.printStackTrace();
+        }
     }
 }

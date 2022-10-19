@@ -23,9 +23,9 @@ public class EmployeeController {
     /**
      * Get's the value from viewand transfer to service section.
      *
-     * @return returns true if employee added
+     * @return returns id of employee added
      */
-    public boolean addEmployee(EmployeeDTO employeeDTO) throws EMSException {
+    public int addEmployee(EmployeeDTO employeeDTO) throws EMSException {
         return employeeService.addEmployee(employeeDTO);
     }
 
@@ -54,8 +54,8 @@ public class EmployeeController {
      * @param employee
      * @return the employee details from the service class.
      */
-    public boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException{
-        return employeeService.updateEmployee(employeeDTO);
+    public void updateEmployee(EmployeeDTO employeeDTO) throws EMSException{
+        employeeService.updateEmployee(employeeDTO);
     }
 
     /**
@@ -63,8 +63,8 @@ public class EmployeeController {
      *
      * @return true if employee is deleted
      */
-    public boolean deleteEmployee(int employeeId) throws EMSException {
-        return employeeService.deleteEmployee(employeeId);
+    public void deleteEmployee(int employeeId) throws EMSException {
+        employeeService.deleteEmployee(employeeId);
     }
 
     /**
@@ -116,6 +116,26 @@ public class EmployeeController {
      */
     public boolean validatePhoneNumber(long phoneNumber) throws EMSException {
         return employeeService.validatePhoneNumber(phoneNumber);
+    }
+
+    /**
+     * Transfers employee id to check if already present in database.
+     *
+     * @param employee id
+     * @return true if id exists.
+     */
+    public boolean isIdPresent(int employeeId) throws EMSException {
+        return employeeService.isIdPresent(employeeId);
+    }
+
+    /**
+     * Transfers employee id to get the respective employee details.
+     *
+     * @param employee id
+     * @return employee details of the id
+     */
+    public EmployeeDTO getEmployeeById(int employeeId) throws EMSException {
+        return employeeService.getEmployeeById(employeeId);
     }
 
 }

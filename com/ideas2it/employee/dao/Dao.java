@@ -3,7 +3,6 @@ package com.ideas2it.employee.dao;
 import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.model.Address;
-import com.ideas2it.employee.util.connection.ConnectionUtil;
 import java.util.List;
 
 /**
@@ -21,16 +20,7 @@ public interface Dao {
      * @param employee from controller
      * @return Return the boolean value.
      */
-    boolean addEmployee(Employee employee) throws EMSException ;
-
-    /**
-     * Saves the address details in above database
-     * and return true if the process is successful.
-     * 
-     * @param employee from controller
-     * @return Return the boolean value.
-     */
-    boolean addAddress(List<Address> addresses, int employeeid) throws EMSException ;
+    public int addEmployee(Employee employee) throws EMSException ;
 
     /**
      * Returns EmployeeDetail to be displayed.
@@ -38,7 +28,7 @@ public interface Dao {
      * @param employee
      * @return Returns employee
      */
-    List<Employee> displayEmployee() throws EMSException ;
+    public List<Employee> displayEmployee() throws EMSException ;
 
     /**
      * Updates the employee detail and returns true if successful.
@@ -46,15 +36,7 @@ public interface Dao {
      * @param employee
      * @return true if employee is updated
      */
-    boolean updateEmployee(Employee employee) throws EMSException ;
-
-    /**
-     * Updates the address detail and returns true if successful.
-     *
-     * @param employee
-     * @return true if employee is updated
-     */
-    boolean updateAddress(List<Address> addresses, int employeeid) throws EMSException;
+    public void updateEmployee(Employee employee) throws EMSException ;
 
     /**
      * Search the employee detail and returns the employee details.
@@ -62,7 +44,7 @@ public interface Dao {
      * @param firstName
      * @return employee details wiith address.
      */
-    List<Employee> searchEmployee(String firstName) throws EMSException ;
+    public List<Employee> searchEmployee(String firstName) throws EMSException ;
 
     /**
      * Deletes the employee details and returns true if successful.
@@ -70,6 +52,6 @@ public interface Dao {
      * @param employee name
      * @return true if employee details are deleted.
      */
-    boolean deleteEmployee(int employeeId) throws EMSException ;
+    public void deleteEmployee(int employeeId) throws EMSException ;
 
 }
