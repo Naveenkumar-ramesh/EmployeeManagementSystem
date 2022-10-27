@@ -13,6 +13,7 @@ public class Address {
     private String state;
     private int pinCode;
     private String type;
+    private int id;
 
     public Address() {
     }
@@ -74,6 +75,14 @@ public class Address {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String toString() {

@@ -85,7 +85,6 @@ public class EmployeeView {
      * and Shows if they are added or not.
      */
     public void createEmployee() {
-        boolean isValid;
         List<AddressDTO> addressDTOs = new ArrayList<>();
         System.out.println(EmployeeManagementConstant.VALID_DETAILS);
         try {
@@ -114,13 +113,9 @@ public class EmployeeView {
                                           dateOfJoining, addressDTOs,dateOfBirth,
                                           gender, role);
 
-            if (employeeController.addEmployee(employeeDTO)) {
-                logger.info("Employee Details Added");
-                System.out.println("Employee Details Added");
-            } else {
-                System.out.println("Employee Details  Not Added...Try Again");
-            }
-
+            employeeId = employeeController.addEmployee(employeeDTO);
+            logger.info("Employee Details Added for ID = " + employeeId);
+            System.out.println("Employee Details Added");
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
         }
@@ -134,7 +129,7 @@ public class EmployeeView {
      */
     public AddressDTO addAddress() {
 
-        String type = getAddressDetail("Address type");
+        String type = getType();
         String doorNumber = getDoorNumber();
         String street = getAddressDetail("Street Name");
         String city = getAddressDetail("City Name");
@@ -197,7 +192,6 @@ public class EmployeeView {
         }
     }
 
-
     /**
      * Transfers the employee details to check if the name exists
      * and if exists it replaces the employee details.
@@ -207,39 +201,141 @@ public class EmployeeView {
     public void updateEmployee() {
         boolean isValid;
         List<AddressDTO> addressDTOs = new ArrayList<>();
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-
-        int employeeId = getId();
-        String firstName = getName("First Name");
-        String lastName = getName("Last Name");
-        String email = getEmail();
-        long phoneNumber = getPhoneNumber();
-        double salary = getSalary();
-        LocalDate dateOfBirth = getDateOfBirth();
-        LocalDate dateOfJoining = getDateOfJoining(dateOfBirth);
-        String gender = getName("Gender");
-        String role = getName("Role");
-        System.out.println("  Enter valid Address Details");
-
-        AddressDTO address = addAddress();
-        addressDTOs.add(address);
-        address = addAnotherAddress();
-
-        if (address != null)   {
-            addressDTOs.add(address);
-        }
-        employeeDTO = new EmployeeDTO(employeeId, firstName, lastName,
-                                      email, phoneNumber,salary, dateOfJoining,
-                                      addressDTOs, dateOfBirth, gender, role);
-
+        int employeeId;
+        int operations;
         try {
-            if (employeeController.updateEmployee(employeeDTO)) {
-                logger.info("Employee details has been updated");
-                System.out.println("Employee details has been updated");
-            }
+            do {
+                System.out.println("Enter existing Employee Id");
+                employeeId = getId();
+            } while(!(employeeController.isIdPresent(employeeId)));
+
+            EmployeeDTO employeeDTO = employeeController.getEmployeeById(employeeId);
+
+            do {
+                System.out.println("Enter the opertaion to be done \n\n1.FIRST NAME"
+                                   + "\n2.LAST NAME \n3.EMAIL \n4.PHONE NUMBER"
+                                   + " \n5.SALARY \n6.DATE OF BIRTH "
+                                   + " \n7.DATE OF JOINING \n8.GENDER \n9.ROLE"
+                                   + " \n10.ADDRESS \n11.EXIT");
+                operations = Integer.valueOf(scanner.nextLine());
+
+                switch (operations) {
+                    case 1:
+                        employeeDTO.setFirstName(getName("First Name"));
+                        break;
+
+                    case 2:
+                        employeeDTO.setLastName(getName("Last Name"));
+                        break;
+
+                    case 3:
+                        employeeDTO.setEmail(getEmail());
+                        break;
+
+                    case 4:
+                        employeeDTO.setPhoneNumber(getPhoneNumber());
+                        break;
+
+                    case 5:
+                        employeeDTO.setSalary(getSalary());
+                        break;
+
+                    case 6:
+                        employeeDTO.setDateOfBirth(getDateOfBirth());
+                        break;
+
+                    case 7:
+                        employeeDTO.setDateOfJoining(getDateOfJoining(employeeDTO.getDateOfBirth()));
+                        break;
+
+                    case 8:
+                        employeeDTO.setGender(getName("Gender"));
+                        break;
+
+                    case 9:
+                        employeeDTO.setRole(getName("Role"));
+                        break;
+
+                    case 10:
+                        employeeDTO.setAddresses(updateAddress(employeeDTO));
+                        break;
+
+                    case 11:
+                        break;
+
+                    default:
+                        System.out.println("Wrong choice ,Try again ");
+                }
+            } while (11 != operations);
+
+            employeeController.updateEmployee(employeeDTO);
+            logger.info("Employee details has been updated");
+            System.out.println("Employee details has been updated");
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
+        } catch (NumberFormatException numberFormatError) {
+            logger.error("Error while choosing update");
+            System.out.println("Error while choosing update , Try again ");
         }
+    }
+
+    /**
+     * gets employee id and updates the address of the employee.
+     *
+     * @return list of addresses
+     */
+    public List<AddressDTO> updateAddress(EmployeeDTO employeeDTO) {
+        int operations = 0;
+        List<AddressDTO> addressDTOs = employeeDTO.getAddresses();
+        String addressType = getType();
+        for (AddressDTO addressDTO : addressDTOs) {
+
+            if (addressType.equals(addressDTO.getType())) {
+                
+                do {
+
+                    try {
+                        System.out.println("Enter the opertaion to be done \n\n1.DOORNUMBER"
+                                   + "\n2.STREET \n3.CITY "
+                                   + "\n4.STATE \n5.PINCODE \n6.EXIT");
+                        operations = Integer.valueOf(scanner.nextLine());
+
+                        switch (operations) {
+                            case 1:
+                                addressDTO.setDoorNumber(getDoorNumber());
+                                break;
+
+                            case 2:
+                                addressDTO.setStreet(getAddressDetail("Street Name"));
+                                break;
+
+                            case 3:
+                                addressDTO.setCity(getAddressDetail("City Name"));
+                                break;
+
+                            case 4:
+                                addressDTO.setState(getAddressDetail("State Name"));
+                                break;
+
+                            case 5:
+                                addressDTO.setPinCode(getPinCode());
+                                break;
+
+                           case 6:
+                               break;
+
+                           default:
+                               System.out.println("Choose Correct Operation");
+                       }
+                   } catch (NumberFormatException numberFormatError) {
+                       logger.error("Error while choosing address update");
+                       System.out.println("Error while choosing address update, Try again");
+                   }
+
+                } while (6 != operations);
+            }
+        }
+        return addressDTOs;
     }
 
     /**
@@ -250,12 +346,13 @@ public class EmployeeView {
 
         int employeeId = getId();
         try {
-            if (employeeController.deleteEmployee(employeeId) != false) {
+            if (employeeController.isIdPresent(employeeId)) {
+                employeeController.deleteEmployee(employeeId);
                 logger.info("Employee details deleted for ID = " + employeeId);
-                System.out.println("Employee details deleted");
+                System.out.println("Employee details deleted for ID = "
+                                    + employeeId);
             } else {
-                logger.info("No Employee details found for ID = " + employeeId);
-                System.out.println("No Employee details found ");
+                System.out.println("This Employee ID does not exist");
             }
         } catch (EMSException e) {
             System.out.println(e.getErrorCode() + " " + e.getMessage());
@@ -561,6 +658,33 @@ public class EmployeeView {
             }
         }while (!(isValid));
         return address;
+    }
+
+    /**
+     * Get's the type of address
+     */
+    public String getType() {
+        String type = null;
+        try {
+            System.out.println("Enter the opertaion to be done \n\na.TEMPORARY"
+                               + "\nb.PERMANANT");
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "a":
+                    type = "temporary";
+                    break;
+
+                case "b":
+                    type = "permanant";
+                    break;
+
+                default:
+                    System.out.println("Try Again");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid choice");
+        }
+        return type;
     }
                 
 }
