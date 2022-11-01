@@ -4,6 +4,7 @@ import com.ideas2it.employee.constant.EmployeeManagementConstant;
 import com.ideas2it.employee.controller.EmployeeController;
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.dto.ProjectDTO;
 import com.ideas2it.employee.exception.EMSException;
 
 import java.text.ParseException;
@@ -39,37 +40,37 @@ public class EmployeeView {
      */
     public void chooseOperation() {
 
-        int loopExit = 1;
-        while (loopExit != 0) {
+        int operations = 0;
+        do {
             try {
-                System.out.println("Enter the opertaion to be done \n\na.CREATE"
-                                   + "\nb.Display \nc.SEARCH "
-                                   + "\nd.UPDATE \ne.DELETE \nf.EXIT");
-                String choice = scanner.nextLine();
-                switch (choice) {
-                    case "a":
+                System.out.println("Enter the opertaion to be done \n\n1.CREATE"
+                                   + "\n2.Display \n3.SEARCH "
+                                   + "\n4.UPDATE \n5.DELETE \n6.EXIT");
+                operations = Integer.valueOf(scanner.nextLine());
+                switch (operations) {
+                    case 1:
                         this.createEmployee();
                         break;
 
-                    case "b":
+                    case 2:
                         this.displayEmployee();
                         break;
 
-                    case "c":
+                    case 3:
                         this.searchEmployee();
                         break;
 
-                    case "d":
+                    case 4:
                         this.updateEmployee();
                         break;
 
-                    case "e":
+                    case 5:
                         this.deleteEmployee();
                         break;
 
-                    case "f":
+                    case 6:
                         System.out.println("**EXIT**");
-                        System.exit(0);
+                        break;
 
                     default:
                         System.out.println("Try Again");
@@ -77,7 +78,7 @@ public class EmployeeView {
             } catch (InputMismatchException e) {
                 System.out.println("Invalid choice");
             }
-        }
+        } while (6 != operations);
     }
 
     /**
@@ -87,6 +88,8 @@ public class EmployeeView {
     public void createEmployee() {
         List<AddressDTO> addressDTOs = new ArrayList<>();
         System.out.println(EmployeeManagementConstant.VALID_DETAILS);
+        List<ProjectDTO> projectDTOs = new ArrayList<>();
+        boolean isCheck;
         try {
 
             int employeeId = 0;
@@ -108,10 +111,15 @@ public class EmployeeView {
             if (address != null)   {
                 addressDTOs.add(address);
             }
+            isCheck = getResponse();
+            if (isCheck)   {
+                projectDTOs = getProject(projectDTOs);
+            }
+
             employeeDTO = new EmployeeDTO(employeeId, firstName, lastName,
                                           email, phoneNumber, salary,
                                           dateOfJoining, addressDTOs,dateOfBirth,
-                                          gender, role);
+                                          gender, role, projectDTOs);
 
             employeeId = employeeController.addEmployee(employeeDTO);
             logger.info("Employee Details Added for ID = " + employeeId);
@@ -148,7 +156,7 @@ public class EmployeeView {
     public void displayEmployee() {
 
         try {
-            List<EmployeeDTO> employees = employeeController.displayEmployee();
+            List<EmployeeDTO> employees = employeeController.getEmployees();
             if(!(employees.isEmpty())) {
                 Iterator<EmployeeDTO> iterator = employees.iterator();
                 while (iterator.hasNext()) {
@@ -207,7 +215,7 @@ public class EmployeeView {
             do {
                 System.out.println("Enter existing Employee Id");
                 employeeId = getId();
-            } while(!(employeeController.isIdPresent(employeeId)));
+            } while(!(employeeController.isEmployeePresent(employeeId)));
 
             EmployeeDTO employeeDTO = employeeController.getEmployeeById(employeeId);
 
@@ -216,7 +224,7 @@ public class EmployeeView {
                                    + "\n2.LAST NAME \n3.EMAIL \n4.PHONE NUMBER"
                                    + " \n5.SALARY \n6.DATE OF BIRTH "
                                    + " \n7.DATE OF JOINING \n8.GENDER \n9.ROLE"
-                                   + " \n10.ADDRESS \n11.EXIT");
+                                   + " \n10.ADDRESS \n11.Project \n12.EXIT");
                 operations = Integer.valueOf(scanner.nextLine());
 
                 switch (operations) {
@@ -261,12 +269,16 @@ public class EmployeeView {
                         break;
 
                     case 11:
+                        employeeDTO.setProjects(getProject(employeeDTO.getProjects()));
+                        break;
+
+                    case 12:
                         break;
 
                     default:
                         System.out.println("Wrong choice ,Try again ");
                 }
-            } while (11 != operations);
+            } while (12 != operations);
 
             employeeController.updateEmployee(employeeDTO);
             logger.info("Employee details has been updated");
@@ -346,7 +358,7 @@ public class EmployeeView {
 
         int employeeId = getId();
         try {
-            if (employeeController.isIdPresent(employeeId)) {
+            if (employeeController.isEmployeePresent(employeeId)) {
                 employeeController.deleteEmployee(employeeId);
                 logger.info("Employee details deleted for ID = " + employeeId);
                 System.out.println("Employee details deleted for ID = "
@@ -685,6 +697,80 @@ public class EmployeeView {
             System.out.println("Invalid choice");
         }
         return type;
+    }
+
+    /**
+     * Get's the project details for the project id.
+     *
+     * @return project details.
+     */
+    public List<ProjectDTO> getProject(List<ProjectDTO> projectDTOs) {
+       ProjectDTO projectDTO = null;
+       boolean isRepeat;
+       try {
+           do {
+               projectDTO = employeeController.getProject(getProjectID());
+               if (null != projectDTO) {
+                   System.out.println(projectDTO);
+                   projectDTOs.add(projectDTO);
+               }
+               isRepeat = getResponse();
+           } while(isRepeat);
+       } catch (EMSException e) {
+            logger.error(e.getErrorCode() + " " + e.getMessage());
+            System.out.println(e.getErrorCode() + " " + e.getMessage());
+        }
+       return projectDTOs;
+    }
+
+    /**
+     * Get the employee id of the employee from the user.
+     * @return if the given id is valid it returns the id else ask again.
+     */
+    public int getProjectID() {
+        boolean isValid = true;
+        String projectId;
+        System.out.println("Enter project id");
+        do{
+            projectId = scanner.nextLine();
+            if(employeeController.validateField(EmployeeManagementConstant.REGEX_ID,
+                                                 projectId)) {
+                isValid = false;
+            } else {
+                System.out.println("Invalid Id ");   
+            }
+        } while (isValid);
+        return Integer.valueOf(projectId);
+    }
+
+    /**
+     * Get's the response for the continuation of the addition
+     * of project details .
+     *
+     * @return boolean
+     */
+    public boolean getResponse() {
+        boolean isRepeat = false;
+        boolean isValid;
+        System.out.println("You want to add project, press y for yes/ n for no");
+        do {
+            isValid = true;
+
+            switch (scanner.nextLine()) {
+                case "y":
+                    isRepeat = true;
+                    break;
+
+                case "n":
+                    isRepeat = false;
+                    break;
+
+                default:
+                    isValid = false;
+                    System.out.println("Invalid choice ... Try again"); 
+            }
+        } while (!isValid);
+        return isRepeat;
     }
                 
 }

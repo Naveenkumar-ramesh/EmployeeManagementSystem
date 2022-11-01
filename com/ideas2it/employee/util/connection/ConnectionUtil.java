@@ -21,7 +21,7 @@ public class ConnectionUtil {
     public static SessionFactory getSessionFactory() {
         try {
             if(sessionFactory == null) {
-                sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
+                sessionFactory = new Configuration().configure().buildSessionFactory();
             }
         } catch (HibernateException e) {
             e.printStackTrace();

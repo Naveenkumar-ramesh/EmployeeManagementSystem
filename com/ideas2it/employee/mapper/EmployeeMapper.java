@@ -4,6 +4,8 @@ import com.ideas2it.employee.model.Address;
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.model.Project;
+import com.ideas2it.employee.dto.ProjectDTO;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -24,8 +26,10 @@ public class EmployeeMapper {
      * @return employee
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
-        EmployeeDTO employeeDTO = null;
+        EmployeeDTO employeeDTO = new EmployeeDTO();;
+        ProjectDTO projectDTO = new ProjectDTO();
         List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
+        List<ProjectDTO> projectDTOs = new ArrayList<ProjectDTO>();
 
         if (null != employee) {
             employeeDTO = new EmployeeDTO();
@@ -43,6 +47,14 @@ public class EmployeeMapper {
                 }
                 employeeDTO.setAddresses(addressDTOs);
             }
+
+            if (null != employee.getProjects()) {
+                for (Project project : employee.getProjects()) {
+                    projectDTOs.add(toProjectDTO(project));
+                }
+                employeeDTO.setProjects(projectDTOs);
+            }
+
             employeeDTO.setDateOfBirth(employee.getDateOfBirth());
             employeeDTO.setGender(employee.getGender());
             employeeDTO.setRole(employee.getRole());
@@ -59,7 +71,9 @@ public class EmployeeMapper {
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
+        Project project = new Project();
         List<Address> addresses = new ArrayList<Address>();
+        List<Project> projects = new ArrayList<Project>();
 
         if (null != employeeDTO) {
             employee.setEmployeeId(employeeDTO.getEmployeeId());
@@ -78,6 +92,12 @@ public class EmployeeMapper {
                     addresses.add(toAddress(address));
                 }
                 employee.setAddresses(addresses);
+            }
+            if (null != employeeDTO.getProjects()) {
+                for (ProjectDTO projectDTO : employeeDTO.getProjects()) {
+                    projects.add(toProject(projectDTO));
+                }
+                employee.setProjects(projects);
             }
         }
         return employee;
@@ -121,6 +141,54 @@ public class EmployeeMapper {
 
         return address;
 
+    }
+
+    /**
+     * Convert model Project details to DTO Project details
+     *
+     * @param projectDTO 
+     * @return project
+     */
+    public static ProjectDTO toProjectDTO(Project project) {
+        ProjectDTO projectDTO = new ProjectDTO();
+        List<EmployeeDTO> employeeDTOs = new ArrayList<EmployeeDTO>();
+
+        if (null != project) {
+            projectDTO.setProjectId(project.getProjectId());
+            projectDTO.setProjectName(project.getProjectName());
+            projectDTO.setTechnology(project.getTechnology());
+            projectDTO.setClientName(project.getClientName());
+            projectDTO.setClientEmail(project.getClientEmail());
+            projectDTO.setStartDate(project.getStartDate());
+            projectDTO.setDueDate(project.getDueDate());
+            projectDTO.setEndDate(project.getEndDate());
+
+        }
+        return projectDTO;
+    }
+
+    /**
+     * Convert DTO Project details to model Project details
+     *
+     * @param project 
+     * @return projectDTO
+     */
+    public static Project toProject(ProjectDTO projectDTO) {
+        Project project = new Project();
+        List<Employee> employees = new ArrayList<Employee>();
+
+        if (null != projectDTO) {
+            project.setProjectId(projectDTO.getProjectId());
+            project.setProjectName(projectDTO.getProjectName());
+            project.setTechnology(projectDTO.getTechnology());
+            project.setClientName(projectDTO.getClientName());
+            project.setClientEmail(projectDTO.getClientEmail());
+            project.setStartDate(projectDTO.getStartDate());
+            project.setDueDate(projectDTO.getDueDate());
+            project.setEndDate(projectDTO.getEndDate());
+
+        }
+        return project;
     }
 
 }

@@ -2,6 +2,7 @@ package com.ideas2it.employee.service;
 
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.dto.ProjectDTO;
 import com.ideas2it.employee.exception.EMSException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -40,7 +41,7 @@ public interface EmployeeService {
      * @param employee
      * @return Returns employee
      */
-    public List<EmployeeDTO> displayEmployee() throws EMSException;
+    public List<EmployeeDTO> getEmployees() throws EMSException;
 
     /**
      * Receives relevent employee details from database.
@@ -104,7 +105,7 @@ public interface EmployeeService {
      * @param employee id
      * @return true if id exists.
      */
-    public boolean isIdPresent(int employeeId) throws EMSException;
+    public boolean isEmployeePresent(int employeeId) throws EMSException;
 
     /**
      * Get the employee details of the id .
