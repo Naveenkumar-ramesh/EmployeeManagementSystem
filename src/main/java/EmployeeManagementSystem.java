@@ -1,5 +1,3 @@
-package com.ideas2it.employee.main;
-
 import com.ideas2it.employee.view.EmployeeView;
 import com.ideas2it.employee.view.ProjectView;
 import org.apache.logging.log4j.Logger;
