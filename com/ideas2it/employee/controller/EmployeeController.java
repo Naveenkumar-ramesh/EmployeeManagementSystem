@@ -2,9 +2,12 @@ package com.ideas2it.employee.controller;
 
 import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.dto.ProjectDTO;
 import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
+import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
+import com.ideas2it.employee.service.ProjectService;
 import com.ideas2it.employee.view.EmployeeView;
 import java.time.LocalDate;
 import java.time.Period;
@@ -12,7 +15,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Transfers the values between view and controller.
+ * Get's the Employee details and saves them to database .
+ * Display's and manipulates these project details.
  *
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
@@ -34,8 +38,8 @@ public class EmployeeController {
      *
      * @return the employee details from the service class.
      */
-    public List<EmployeeDTO> displayEmployee() throws EMSException {
-        return employeeService.displayEmployee();
+    public List<EmployeeDTO> getEmployees() throws EMSException {
+        return employeeService.getEmployees();
     }
 
     /**
@@ -47,7 +51,6 @@ public class EmployeeController {
     public List<EmployeeDTO> searchEmployee(String firstName) throws EMSException {
         return employeeService.searchEmployee(firstName);
     }
-
 
     /**
      * Transfer's employee details to be updated.
@@ -124,8 +127,8 @@ public class EmployeeController {
      * @param employee id
      * @return true if id exists.
      */
-    public boolean isIdPresent(int employeeId) throws EMSException {
-        return employeeService.isIdPresent(employeeId);
+    public boolean isEmployeePresent(int employeeId) throws EMSException {
+        return employeeService.isEmployeePresent(employeeId);
     }
 
     /**
@@ -136,6 +139,17 @@ public class EmployeeController {
      */
     public EmployeeDTO getEmployeeById(int employeeId) throws EMSException {
         return employeeService.getEmployeeById(employeeId);
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     */
+    public ProjectDTO getProject(int projectId) throws EMSException {
+        ProjectService projectService = new ProjectManagementService();
+        ProjectDTO projectDto = projectService.getProjectById(projectId);
+        return projectDto;
     }
 
 }

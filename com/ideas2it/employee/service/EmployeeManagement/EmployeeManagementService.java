@@ -1,13 +1,15 @@
 package com.ideas2it.employee.service.EmployeeManagement;
 
-import com.ideas2it.employee.dao.Dao;
-import com.ideas2it.employee.dao.EmployeeManagementDao.EmployeeDao;
+import com.ideas2it.employee.dao.EmployeeDao;
 import com.ideas2it.employee.mapper.EmployeeMapper;
 import com.ideas2it.employee.dto.AddressDTO;
+import com.ideas2it.employee.dto.ProjectDTO;
 import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.dto.EmployeeDTO;
 import com.ideas2it.employee.model.Employee;
+import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
+import com.ideas2it.employee.service.ProjectService;
 import com.ideas2it.employee.view.EmployeeView;
 import com.ideas2it.employee.util.ValidationUtil;
 
@@ -19,7 +21,8 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 /**
- * Transfers the values between view and controller.
+ * Get's the employee details from the database and provides  
+ * the use and from user to the database.
  *
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
@@ -52,11 +55,10 @@ public class EmployeeManagementService implements EmployeeService {
      * {@inheritDoc}
      * 
      */
-    public List<EmployeeDTO> displayEmployee() throws EMSException {
-        List<Employee> employees = employeeDao.displayEmployee();
+    public List<EmployeeDTO> getEmployees() throws EMSException {
+        List<Employee> employees = employeeDao.getEmployees();
         List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
-        for (int i = 0; i < employees.size(); i++) {
-            Employee employee = employees.get(i);
+        for (Employee employee : employees) {
             employeesDto.add(employeeMapper.toEmployeeDTO(employee));
         }
         return employeesDto;
@@ -70,8 +72,7 @@ public class EmployeeManagementService implements EmployeeService {
     public List<EmployeeDTO> searchEmployee(String firstName) throws EMSException {
         List<Employee> employees = employeeDao.searchEmployee(firstName);
         List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
-        for (int i = 0; i < employees.size(); i++) {
-            Employee employee = employees.get(i);
+        for (Employee employee : employees) {
             employeesDto.add(employeeMapper.toEmployeeDTO(employee));
         }
         return employeesDto;
@@ -83,8 +84,7 @@ public class EmployeeManagementService implements EmployeeService {
      * 
      */
     public void updateEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        employeeDao.updateEmployee(employeeMapper.
-                                          toEmployee(employeeDTO));
+        employeeDao.updateEmployee(employeeMapper.toEmployee(employeeDTO));
     }
 
     /**
@@ -94,6 +94,17 @@ public class EmployeeManagementService implements EmployeeService {
      */
     public void deleteEmployee(int employeeId) throws EMSException {
         employeeDao.deleteEmployee(employeeId);
+    }
+
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     */
+    public ProjectDTO getProjectById(int projectId) throws EMSException {
+        ProjectService projectService = new ProjectManagementService();
+        ProjectDTO projectDto = projectService.getProjectById(projectId);
+        return projectDto;
     }
 
     /**
@@ -120,7 +131,7 @@ public class EmployeeManagementService implements EmployeeService {
      *
      */
     public boolean validateEmail(String email) throws EMSException {
-        return (!(displayEmployee().stream().
+        return (!(getEmployees().stream().
                anyMatch(employeeDTO -> employeeDTO.getEmail().equals(email))));
     }
 
@@ -130,7 +141,7 @@ public class EmployeeManagementService implements EmployeeService {
      *
      */
     public boolean validatePhoneNumber(long phoneNumber) throws EMSException {
-        return (!(displayEmployee().stream().
+        return (!(getEmployees().stream().
                anyMatch(employeeDTO -> String.valueOf(employeeDTO.
                getPhoneNumber()).equals(Long.toString(phoneNumber)))));
     }
@@ -140,12 +151,11 @@ public class EmployeeManagementService implements EmployeeService {
      * {@inheritDoc}
      *
      */
-    public boolean isIdPresent(int employeeId) throws EMSException {
-        List<Employee> employees = employeeDao.displayEmployee();
+    public boolean isEmployeePresent(int employeeId) throws EMSException {
+        List<Employee> employees = employeeDao.getEmployees();
         EmployeeDTO employeeDto = null;
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getEmployeeId() == employeeId) {
-                employeeDto = (employeeMapper.toEmployeeDTO(employees.get(i)));
+        for (Employee employee : employees) {
+            if (employee.getEmployeeId() == employeeId) {
                 return true;
             }
         }
@@ -158,11 +168,11 @@ public class EmployeeManagementService implements EmployeeService {
      *
      */
     public EmployeeDTO getEmployeeById(int employeeId) throws EMSException {
-        List<Employee> employees = employeeDao.displayEmployee();
+        List<Employee> employees = employeeDao.getEmployees();
         EmployeeDTO employeeDto = null;
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getEmployeeId() == employeeId) {
-                employeeDto = (employeeMapper.toEmployeeDTO(employees.get(i)));
+        for (Employee employee : employees) {
+            if (employee.getEmployeeId() == employeeId) {
+                employeeDto = (employeeMapper.toEmployeeDTO(employee));
                 break;
             }
         }

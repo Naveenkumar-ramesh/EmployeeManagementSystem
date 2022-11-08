@@ -1,6 +1,5 @@
-package com.ideas2it.employee.dao.EmployeeManagementDao;
+package com.ideas2it.employee.dao;
 
-import com.ideas2it.employee.dao.Dao;
 import com.ideas2it.employee.model.Address;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.util.connection.ConnectionUtil;
@@ -30,7 +29,7 @@ import org.hibernate.criterion.Restrictions;
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
-public class EmployeeDao implements Dao {
+public class EmployeeDao {
     SessionFactory sessionFactory = ConnectionUtil.getSessionFactory();
     static Logger logger = LogManager.getLogger(EmployeeDao.class);
 
@@ -51,13 +50,14 @@ public class EmployeeDao implements Dao {
             employeeId = (Integer) session.save(employee);
             transaction.commit();
         } catch(HibernateException e) {
-            logger.error("Employee details not added");
+            logger.error(e.getMessage());
             throw new EMSException
              ("Error occured in inserting data, Try again", "ErrorCode 101");
+        } finally {
+            session.close();
         }
         return employeeId;
     }
-
 
     /**
      * Returns EmployeeDetail to be displayed.
@@ -65,18 +65,18 @@ public class EmployeeDao implements Dao {
      * @param employee
      * @return Returns employee
      */
-    public List<Employee> displayEmployee() throws EMSException {
+    public List<Employee> getEmployees() throws EMSException {
         List<Employee> employees = new ArrayList();
+        Session session = sessionFactory.openSession();
         try {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
             employees = session.createQuery("FROM Employee").list();
-            transaction.commit();
         } catch(HibernateException e) {
-            logger.error("Employee details not displayed");
+            logger.error(e.getMessage());
             throw new EMSException
              ("Error occured while retreving data, Try again", 
                "ErrorCode 102");
+        } finally {
+            session.close();
         }
         return employees;
     }
@@ -89,16 +89,18 @@ public class EmployeeDao implements Dao {
      * @return true if employee is updated
      */
     public void updateEmployee(Employee employee) throws EMSException {
-        
+        Session session = sessionFactory.openSession();        
         try {
-            Session session = sessionFactory.openSession();
+
             Transaction transaction = session.beginTransaction();
             session.update(employee);
             transaction.commit();
         } catch(HibernateException e) {
-            logger.error("Employee details not found");
+            logger.error(e.getMessage());
             throw new EMSException
              ("Error occured in updating data, Try again", "ErrorCode 103");
+        } finally {
+            session.close();
         }
     }
 
@@ -110,18 +112,18 @@ public class EmployeeDao implements Dao {
      */
     public List<Employee> searchEmployee(String firstName) throws EMSException {
         List<Employee> employees = new ArrayList();
+        Session session = sessionFactory.openSession();
         try {
-            Session session = sessionFactory.openSession();
-            Transaction transaction = session.beginTransaction();
             Criteria criteria = session.createCriteria(Employee.class);
             employees = (List<Employee>) criteria.add(Restrictions.like
                                   ("firstName", (firstName + "%"))).list();
-            transaction.commit();
         } catch (HibernateException e) {
-            logger.error("Employee details not found");
+            logger.error(e.getMessage());
             throw new EMSException
              ("Error occured while retreving data, Try again", 
                "ErrorCode 102");
+        } finally {
+            session.close();
         }
         return employees;
     }
@@ -141,10 +143,11 @@ public class EmployeeDao implements Dao {
             session.delete(employee);
             transaction.commit();
         } catch (HibernateException e) {
-            logger.error("Employee details not Deleted for Employee Id = " 
-                          + employeeId);
+            logger.error(e.getMessage() + " Employee Id = " + employeeId);
             throw new EMSException
              ("Error occured while deleting data, Try again", "ErrorCode 105");
+        } finally {
+            session.close();
         }
     }
 

@@ -25,5 +25,11 @@
         </key>
         <one-to-many class = "com.ideas2it.employee.model.Address" />
     </bag>
+
+    <bag name="projects" table="employee_project" >
+      <key column="employee_id"/>
+      <many-to-many class="com.ideas2it.employee.model.Project" column="project_id"/>
+    </bag>
+
     </class>
 </hibernate-mapping>

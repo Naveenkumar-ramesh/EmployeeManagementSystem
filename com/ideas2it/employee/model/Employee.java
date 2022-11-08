@@ -1,6 +1,7 @@
 package com.ideas2it.employee.model;
 
 import com.ideas2it.employee.model.Address;
+import com.ideas2it.employee.model.Project;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Employee {
     private LocalDate dateOfBirth;
     private String gender;
     private String role;
+    private List<Project> projects;
 
     public Employee() {
     }
@@ -31,7 +33,7 @@ public class Employee {
     public Employee(int employeeId, String firstName,String lastName,
                     String email, long phoneNumber,double salary,
                     LocalDate dateOfJoining, List<Address> addresses,
-                    LocalDate dateOfBirth, String gender, String role)
+                    LocalDate dateOfBirth, String gender, String role, List<Project> projects)
     {
         this.employeeId = employeeId;
         this.firstName = firstName;
@@ -44,6 +46,7 @@ public class Employee {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.role = role;
+        this.projects = projects;
     }
 
 
@@ -135,6 +138,13 @@ public class Employee {
         this.role = role;
     }
 
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
 
     /**
      * Overiding toString() method
@@ -153,7 +163,8 @@ public class Employee {
                      .append("\nDate Of Birth         : ").append(dateOfBirth)
                      .append("\nGender                : ").append(gender)
                      .append("\nRole                  : ").append(role)
-                     .append(getAddresses());
+                     .append(getAddresses())
+                     .append(getProjects());
 
         return stringBuilder.toString();
     }
