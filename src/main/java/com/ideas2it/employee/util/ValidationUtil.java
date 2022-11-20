@@ -3,7 +3,6 @@ package com.ideas2it.employee.util;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -55,9 +54,8 @@ public class ValidationUtil {
      * @return true if birth date is valid
      */
     public static boolean validateBirthDate(LocalDate dateOfBirth) {
-        boolean isValid = true;
         LocalDate currentDate = LocalDate.now();
-        return isValid = (18 <= Period.between(dateOfBirth, currentDate).getYears()
+        return (18 <= Period.between(dateOfBirth, currentDate).getYears()
                         && Period.between(dateOfBirth, currentDate).
                         getYears() <= 60);
     }

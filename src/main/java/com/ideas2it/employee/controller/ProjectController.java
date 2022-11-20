@@ -1,135 +1,100 @@
 package com.ideas2it.employee.controller;
 
 import com.ideas2it.employee.dto.ProjectDTO;
-import com.ideas2it.employee.dto.EmployeeDTO;
-import com.ideas2it.employee.exception.EMSException;
-import com.ideas2it.employee.service.ProjectService;
 import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
-import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
-import com.ideas2it.employee.service.EmployeeService;
-import com.ideas2it.employee.view.ProjectView;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
-import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Get's the Project details and saves them to database and
- * Display's and manipulates these project details.
+ * Get's the Project details and saves them to database and Display's and
+ * manipulates these project details.
  *
  * @version 1.8 28-10-2022
  * @author Naveenkumar R
  */
+@RestController
+@RequestMapping("/api/ems/v1/project")
 public class ProjectController {
-    ProjectService projectService = new ProjectManagementService();
 
-    /**
-     * Get's the project details and adds them to the database.
-     *
-     * @return returns id of project added
-     */
-    public int addProject(ProjectDTO projectDTO) throws EMSException {
-        return projectService.addProject(projectDTO);
-    }
+	@Autowired
+	private ProjectManagementService projectService;
 
-    /**
-     * Transfers project details to be displayed.
-     *
-     * @return the project details.
-     */
-    public List<ProjectDTO> getProjects() throws EMSException {
-        return projectService.getProjects();
-    }
+	/**
+	 * Get's the project details and adds them to the database.
+	 *
+	 * @return returns id of project added
+	 */
+	@PostMapping("/create")
+	public ResponseEntity<ProjectDTO> addProject(@RequestBody ProjectDTO projectDto) {
+		return new ResponseEntity<ProjectDTO>(projectService.addProject(projectDto), HttpStatus.CREATED);
+	}
 
-    /**
-     * Receives relevent project details from database.
-     *
-     * @param project name
-     * @return returns relevent project details
-     */
-    public List<ProjectDTO> searchProject(String projectName) throws EMSException {
-        return projectService.searchProject(projectName);
-    }
+	/**
+	 * Get's project details from the database to be displayed.
+	 *
+	 * @return the project details.
+	 */
+	@GetMapping("/getall")
+	public ResponseEntity<List<ProjectDTO>> getProjects() {
+		return new ResponseEntity<List<ProjectDTO>>(projectService.getProjects(), HttpStatus.OK);
+	}
 
-    /**
-     * Transfer's project details to be updated.
-     * @param project
-     * @return the project details from the service class.
-     */
-    public void updateProject(ProjectDTO projectDTO) throws EMSException{
-        projectService.updateProject(projectDTO);
-    }
+	/**
+	 * Receives relevant project details from database.
+	 *
+	 * @param project name
+	 * @return returns relevant project details
+	 */
+	@GetMapping("/search/{name}")
+	public ResponseEntity<List<ProjectDTO>> searchProject(String name) {
+		return new ResponseEntity<List<ProjectDTO>>(projectService.searchProject(name), HttpStatus.OK);
+	}
 
-    /**
-     * Transfer's true if deleting process is complete.
-     *
-     * @return true if project is deleted
-     */
-    public void deleteProject(int projectId) throws EMSException {
-        projectService.deleteProject(projectId);
-    }
+	/**
+	 * Updates the project details in the database.
+	 * 
+	 * @param project
+	 */
+	@PatchMapping("/update")
+	public ResponseEntity<ProjectDTO> updateProject(@RequestBody ProjectDTO projectDto) {
+		return new ResponseEntity<ProjectDTO>(projectService.updateProject(projectDto), HttpStatus.OK);
+	}
 
-    /**
-     * Project details to be validated are transfered
-     * Transfer's back true if field satisfies it expectations.
-     *
-     * @param regex pattern and field value
-     * @return true if employee is deleted
-     */
-    public boolean validateField(String pattern, String field) {
-        return projectService.validateField(pattern, field);
-    }
+	/**
+	 * Deletes the project details by project id.
+	 *
+	 * @param project id
+	 */
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteProject(@PathVariable int id) {
+		projectService.deleteProject(id);
+		return new ResponseEntity<>("Employee details deleted sucessfully", HttpStatus.NO_CONTENT);
+	}
 
-    /**
-     * Transfers project starting date  to be validated.
-     *
-     * @param starting date
-     * @return true if starting date is valid.
-     */
-    public boolean isValidStartDate(String startDate) {
-        return projectService.isValidStartDate(startDate);
-    }
-
-    /**
-     * Transfers project starting date and dueend date to be valedated.
-     *
-     * @param starting date and end date
-     * @return true if end date is valid .
-     */
-    public boolean isValidDate(LocalDate startDate, String date) {
-        return projectService.isValidDate(startDate, date);
-    }
-
-    /**
-     * Get's the project details for the requested employeeId.
-     *
-     * @param employee id
-     * @return employee details of the id
-     */
-    public EmployeeDTO getEmployee(int employeeId) throws EMSException {
-        EmployeeService employeeService = new EmployeeManagementService();
-        EmployeeDTO employeeDto = employeeService.getEmployeeById(employeeId);
-        return employeeDto;
-    }
-
-    /**
-     * Transfers project id to check if already present in database.
-     *
-     * @param project id
-     * @return true if id exists.
-     */
-    public boolean isProjectPresent(int projectId) throws EMSException {
-        return projectService.isProjectPresent(projectId);
-    }
-
-    /**
-     * Transfers project id to get the respective project details.
-     *
-     * @param project id
-     * @return project details of the id
-     */
-    public ProjectDTO getProjectById(int projectId) throws EMSException {
-        return projectService.getProjectById(projectId);
-    }
+	/**
+	 * Assigns the employee to the designated project by project id and employee id.
+	 * 
+	 * @param employeeId
+	 * @param projectId
+	 * @return project
+	 */
+	@PatchMapping("/assign/project/{projectId}/employee/{employeeId}")
+	public ResponseEntity<ProjectDTO> assignEmployeeToProject(@PathVariable int projectId,
+			@PathVariable int employeeId) {
+		ProjectDTO projectDTO = null;
+		projectDTO = projectService.assignEmployeeToProject(projectId, employeeId);
+		return new ResponseEntity<ProjectDTO>(projectDTO, HttpStatus.OK);
+	}
 
 }

@@ -6,91 +6,95 @@ package com.ideas2it.employee.dto;
  * @version 2.0 13-09-2022
  * @author Naveenkumar R
  */
+
 public class AddressDTO {
-    private String doorNumber;
-    private String street;
-    private String city;
-    private String state;
-    private int pinCode;
-    private String type;
 
-    public AddressDTO() {
-    }
+	private int id;
+	private String doorNumber;
+	private String street;
+	private String city;
+	private String state;
+	private int pinCode;
+	private String type;
 
-    public AddressDTO(String doorNumber, String street, String city,
-                           String state, int pinCode, String type) {
+	public AddressDTO() {
+	}
 
-        this.doorNumber = doorNumber;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.pinCode = pinCode;
-        this.type = type;
-    }
+	public AddressDTO(int id, String doorNumber, String street, String city, String state, int pinCode, String type) {
 
-    public String getDoorNumber() {
-        return doorNumber;
-    }
+		this.id = id;
+		this.doorNumber = doorNumber;
+		this.street = street;
+		this.city = city;
+		this.state = state;
+		this.pinCode = pinCode;
+		this.type = type;
+	}
 
-    public void setDoorNumber(String doorNumber) {
-        this.doorNumber = doorNumber;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getStreet() {
-        return street;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+	public String getDoorNumber() {
+		return doorNumber;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public void setDoorNumber(String doorNumber) {
+		this.doorNumber = doorNumber;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public String getState() {
-        return state;
-    }
+	public void setStreet(String street) {
+		this.street = street;
+	}
 
-    public void setState(String state) {
-        this.state = state;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public int getPinCode() {
-        return pinCode;
-    }
+	public void setCity(String city) {
+		this.city = city;
+	}
 
-    public void setPinCode(int pinCode) {
-        this.pinCode = pinCode;
-    }
+	public String getState() {
+		return state;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public void setState(String state) {
+		this.state = state;
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	public int getPinCode() {
+		return pinCode;
+	}
 
-    public String toString() {
-        StringBuilder stringBuilderAddress = new StringBuilder();
-        stringBuilderAddress.append("\n\nType                  : ")
-                            .append(getType())
-                            .append("\nDoorNumber            : ")
-                            .append(getDoorNumber())
-                            .append("\nStreet                : ")
-                            .append(getStreet())
-                            .append("\nCity                  : ")
-                            .append(getCity())
-                            .append("\nState                 : ")
-                            .append(getState())
-                            .append("\nPincode               : ")
-                            .append(getPinCode());
+	public void setPinCode(int pinCode) {
+		this.pinCode = pinCode;
+	}
 
-        return stringBuilderAddress.toString();
-    }
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String toString() {
+		StringBuilder stringBuilderAddress = new StringBuilder();
+		stringBuilderAddress.append("\n\nType                  : ").append(getType())
+				.append("\nDoorNumber            : ").append(getDoorNumber()).append("\nStreet                : ")
+				.append(getStreet()).append("\nCity                  : ").append(getCity())
+				.append("\nState                 : ").append(getState()).append("\nPincode               : ")
+				.append(getPinCode());
+
+		return stringBuilderAddress.toString();
+	}
 }

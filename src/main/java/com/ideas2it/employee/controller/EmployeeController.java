@@ -1,155 +1,100 @@
 package com.ideas2it.employee.controller;
 
-import com.ideas2it.employee.dto.AddressDTO;
 import com.ideas2it.employee.dto.EmployeeDTO;
-import com.ideas2it.employee.dto.ProjectDTO;
-import com.ideas2it.employee.exception.EMSException;
-import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.service.EmployeeManagement.EmployeeManagementService;
-import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
-import com.ideas2it.employee.service.ProjectService;
-import com.ideas2it.employee.view.EmployeeView;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
-import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Get's the Employee details and saves them to database .
- * Display's and manipulates these project details.
+ * Get's the Employee details and saves them to database Display's and
+ * manipulates these project details.
  *
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
+
+@RestController
+@RequestMapping("/api/ems/v1/employee")
 public class EmployeeController {
-    EmployeeService employeeService = new EmployeeManagementService();
 
-    /**
-     * Get's the value from viewand transfer to service section.
-     *
-     * @return returns id of employee added
-     */
-    public int addEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        return employeeService.addEmployee(employeeDTO);
-    }
+	@Autowired
+	private EmployeeManagementService employeeService;
 
-    /**
-     * Transfers employee details to be displayed.
-     *
-     * @return the employee details from the service class.
-     */
-    public List<EmployeeDTO> getEmployees() throws EMSException {
-        return employeeService.getEmployees();
-    }
+	/**
+	 * Employee details are added to the database.
+	 *
+	 * @return returns id of employee added
+	 */
+	@PostMapping("/create")
+	public ResponseEntity<EmployeeDTO> addEmployee(@RequestBody EmployeeDTO employeeDto) {
+		return new ResponseEntity<EmployeeDTO>(employeeService.addEmployee(employeeDto), HttpStatus.CREATED);
+	}
 
-    /**
-     * Receives relevent employee details from database.
-     *
-     * @param Employee name
-     * @return returns relevent employee details
-     */
-    public List<EmployeeDTO> searchEmployee(String firstName) throws EMSException {
-        return employeeService.searchEmployee(firstName);
-    }
+	/**
+	 * Employee details to be displayed.
+	 *
+	 * @return the employee details from the service class.
+	 */
+	@GetMapping("/getall")
+	public ResponseEntity<List<EmployeeDTO>> getEmployees() {
+		return new ResponseEntity<List<EmployeeDTO>>(employeeService.getEmployees(), HttpStatus.OK);
+	}
 
-    /**
-     * Transfer's employee details to be updated.
-     * @param employee
-     * @return the employee details from the service class.
-     */
-    public void updateEmployee(EmployeeDTO employeeDTO) throws EMSException{
-        employeeService.updateEmployee(employeeDTO);
-    }
+	/**
+	 * Receives the required employee details from database.
+	 *
+	 * @param Employee name
+	 * @return returns required employee details
+	 */
+	@GetMapping("/search/{name}")
+	public ResponseEntity<List<EmployeeDTO>> searchEmployee(@PathVariable String name) {
+		return new ResponseEntity<List<EmployeeDTO>>(employeeService.searchEmployee(name), HttpStatus.OK);
+	}
 
-    /**
-     * Transfer's true if deleting process is complete.
-     *
-     * @return true if employee is deleted
-     */
-    public void deleteEmployee(int employeeId) throws EMSException {
-        employeeService.deleteEmployee(employeeId);
-    }
+	/**
+	 * Employee details to be updated are added to the database.
+	 * 
+	 * @param employee
+	 */
+	@PatchMapping("/update")
+	public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDto) {
+		return new ResponseEntity<EmployeeDTO>(employeeService.updateEmployee(employeeDto), HttpStatus.OK);
+	}
 
-    /**
-     * Employee details to be validated are transfered
-     * Transfer's back true if field satisfies it expectations.
-     *
-     * @param regex pattern and field value
-     * @return true if employee is deleted
-     */
-    public boolean validateField(String regexPattern, String fieldValue) {
-        return employeeService.validateField(regexPattern, fieldValue);
-    }
+	/**
+	 * The required employee data is deleted.
+	 * 
+	 * @param employee id
+	 */
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteEmployee(@PathVariable int id) {
+		employeeService.deleteEmployee(id);
+		return new ResponseEntity<>("Employee details deleted sucessfully", HttpStatus.NO_CONTENT);
+	}
 
-    /**
-     * Transfers birth date and joining date to be valedated.
-     *
-     * @param birth date and joining date
-     * @return true if joining date is valid.
-     */
-    public boolean validateJoiningDate(LocalDate dateOfBirth,LocalDate dateOfJoining) {
-        return employeeService.validateJoiningDate(dateOfBirth,dateOfJoining);
-    }
-
-    /**
-     * Transfers birth date to be valedated.
-     *
-     * @param birth date
-     * @return true if birth date is valid.
-     */
-    public boolean validateBirthDate(LocalDate dateOfBirth) {
-        return employeeService.validateBirthDate(dateOfBirth);
-    }
-
-    /**
-     * Transfers email id to be valedated.
-     *
-     * @param email id
-     * @return true if email id is valid.
-     */
-    public boolean validateEmail(String email) throws EMSException {
-        return employeeService.validateEmail(email);
-    }
-
-    /**
-     * Transfers phoneNumber to be valedated.
-     *
-     * @param phoneNumber
-     * @return true if phoneNumber is valid.
-     */
-    public boolean validatePhoneNumber(long phoneNumber) throws EMSException {
-        return employeeService.validatePhoneNumber(phoneNumber);
-    }
-
-    /**
-     * Transfers employee id to check if already present in database.
-     *
-     * @param employee id
-     * @return true if id exists.
-     */
-    public boolean isEmployeePresent(int employeeId) throws EMSException {
-        return employeeService.isEmployeePresent(employeeId);
-    }
-
-    /**
-     * Transfers employee id to get the respective employee details.
-     *
-     * @param employee id
-     * @return employee details of the id
-     */
-    public EmployeeDTO getEmployeeById(int employeeId) throws EMSException {
-        return employeeService.getEmployeeById(employeeId);
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public ProjectDTO getProject(int projectId) throws EMSException {
-        ProjectService projectService = new ProjectManagementService();
-        ProjectDTO projectDto = projectService.getProjectById(projectId);
-        return projectDto;
-    }
+	/**
+	 * Assigns the project to the designated employee.
+	 * 
+	 * @param employeeId
+	 * @param projectId
+	 * @return employee
+	 */
+	@PatchMapping("/assign/employee/{employeeId}/project/{projectId}")
+	public ResponseEntity<EmployeeDTO> assignProjectToEmployee(@PathVariable int employeeId,
+			@PathVariable int projectId) {
+		EmployeeDTO employeeDTO = employeeService.assignProjectToEmployee(employeeId, projectId);
+		return new ResponseEntity<EmployeeDTO>(employeeDTO, HttpStatus.OK);
+	}
 
 }

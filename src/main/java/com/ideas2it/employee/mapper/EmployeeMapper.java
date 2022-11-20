@@ -8,6 +8,9 @@ import com.ideas2it.employee.model.Project;
 import com.ideas2it.employee.dto.ProjectDTO;
 
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 
 /**
@@ -17,6 +20,8 @@ import java.util.ArrayList;
  * @version 1.8 15-09-2022
  * @author Naveenkumar R
  */
+
+@Component
 public class EmployeeMapper {
 
     /**
@@ -27,7 +32,6 @@ public class EmployeeMapper {
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();;
-        ProjectDTO projectDTO = new ProjectDTO();
         List<AddressDTO> addressDTOs = new ArrayList<AddressDTO>();
         List<ProjectDTO> projectDTOs = new ArrayList<ProjectDTO>();
 
@@ -71,7 +75,6 @@ public class EmployeeMapper {
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
-        Project project = new Project();
         List<Address> addresses = new ArrayList<Address>();
         List<Project> projects = new ArrayList<Project>();
 
@@ -151,8 +154,6 @@ public class EmployeeMapper {
      */
     public static ProjectDTO toProjectDTO(Project project) {
         ProjectDTO projectDTO = new ProjectDTO();
-        List<EmployeeDTO> employeeDTOs = new ArrayList<EmployeeDTO>();
-
         if (null != project) {
             projectDTO.setProjectId(project.getProjectId());
             projectDTO.setProjectName(project.getProjectName());
@@ -175,8 +176,6 @@ public class EmployeeMapper {
      */
     public static Project toProject(ProjectDTO projectDTO) {
         Project project = new Project();
-        List<Employee> employees = new ArrayList<Employee>();
-
         if (null != projectDTO) {
             project.setProjectId(projectDTO.getProjectId());
             project.setProjectName(projectDTO.getProjectName());

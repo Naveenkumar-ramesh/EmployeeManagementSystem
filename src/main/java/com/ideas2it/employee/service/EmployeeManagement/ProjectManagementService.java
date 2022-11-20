@@ -1,147 +1,129 @@
 package com.ideas2it.employee.service.EmployeeManagement;
 
-import com.ideas2it.employee.dao.ProjectManagementDao;
-import com.ideas2it.employee.dao.EmployeeDao;
-import com.ideas2it.employee.mapper.ProjectMapper;
 import com.ideas2it.employee.mapper.EmployeeMapper;
-import com.ideas2it.employee.exception.EMSException;
+import com.ideas2it.employee.mapper.ProjectMapper;
 import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
-import com.ideas2it.employee.service.EmployeeService;
 import com.ideas2it.employee.service.ProjectService;
 import com.ideas2it.employee.dto.ProjectDTO;
-import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.model.Employee;
 import com.ideas2it.employee.model.Project;
-import com.ideas2it.employee.util.ValidationUtil;
+import com.ideas2it.employee.constant.EmployeeManagementConstant;
+import com.ideas2it.employee.dao.ProjectDAO;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 /**
- * Get's the project details from the database and provides  
- * the user and from user to the database.
+ * Get's the project details from the database and provides the user and from
+ * user to the database.
  *
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
+
+@Service
 public class ProjectManagementService implements ProjectService {
-    ProjectMapper projectMapper = new ProjectMapper();
-    ProjectManagementDao projectDao = new ProjectManagementDao();
-    ValidationUtil validationUtil = new ValidationUtil();
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validateField(String regexPattern, String fieldValue) {
-        return validationUtil.isValid(regexPattern, fieldValue);
-    }
+	@Autowired
+	private ProjectDAO projectDao;
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public int addProject(ProjectDTO projectDTO) throws EMSException {
-        return projectDao.addProject(projectMapper.toProject(projectDTO));
-    }
+	@Lazy
+	@Autowired
+	private EmployeeManagementService service;
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public List<ProjectDTO> getProjects() throws EMSException {
-        List<Project> projects = projectDao.getProjects();
-        List<ProjectDTO> projectDtos = new ArrayList<ProjectDTO>();
-        for (Project project : projects) {
-            projectDtos.add(projectMapper.toProjectDTO(project));
-        }
-        return projectDtos;
-    }
+	private Logger logger = LogManager.getLogger(ProjectManagementService.class);
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public List<ProjectDTO> searchProject(String projectName) throws EMSException {
-        List<Project> projects = projectDao.searchProject(projectName);
-        List<ProjectDTO> projectDtos = new ArrayList<ProjectDTO>();
-        for (Project project : projects) {
-            projectDtos.add(projectMapper.toProjectDTO(project));
-        }
-        return projectDtos;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public ProjectDTO addProject(ProjectDTO projectDto) {
+		Project project = ProjectMapper.toProject(projectDto);
+		project = projectDao.save(project);
+		logger.info("Project created succuessfully ProjectID =" + projectDto.getProjectId());
+		return ProjectMapper.toProjectDTO(project);
+	}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public void updateProject(ProjectDTO projectDTO) throws EMSException {
-        projectDao.updateProject(projectMapper.toProject(projectDTO));
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public List<ProjectDTO> getProjects() {
+		List<Project> projects = projectDao.findAll();
+		List<ProjectDTO> projectsDto = new ArrayList<ProjectDTO>();
+		for (Project project : projects) {
+			projectsDto.add(EmployeeMapper.toProjectDTO(project));
+		}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public void deleteProject(int projectId) throws EMSException {
-        projectDao.deleteProject(projectId);
-    }
+		return projectsDto;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isValidStartDate(String startDate) {
-        return validationUtil.isValidStartDate(startDate);
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public List<ProjectDTO> searchProject(String name) {
+		List<Project> projects = projectDao.findByName(name);
+		List<ProjectDTO> projectsDto = new ArrayList<ProjectDTO>();
+		for (Project project : projects) {
+			projectsDto.add(ProjectMapper.toProjectDTO(project));
+		}
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isValidDate(LocalDate startDate, String date) {
-        return validationUtil.isValidDate(startDate, date);
-    }
+		return projectsDto;
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean isProjectPresent(int projectId) throws EMSException {
-        List<Project> projects = projectDao.getProjects();
-        ProjectDTO projectDto = null;
-        for (Project project : projects) {
-            if (project.getProjectId() == projectId) {
-                return true;
-            }
-        }
-        return false;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public ProjectDTO updateProject(ProjectDTO projectDto) {
+		Project project = ProjectMapper.toProject(projectDto);
+		ProjectDTO projectDTO = ProjectMapper.toProjectDTO(projectDao.save(project));
+		return projectDTO;
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public ProjectDTO getProjectById(int projectId) throws EMSException {
-        List<Project> projects = projectDao.getProjects();
-        ProjectDTO projectDto = null;
-        for (Project project : projects) {
-            if (project.getProjectId() == projectId) {
-                projectDto = (projectMapper.toProjectDTO(project));
-                break;
-            }
-        }
-        return projectDto;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public void deleteProject(int id) {
+		projectDao.deleteById(id);
+		logger.info("Project deleted successfully ProjectID =" + id);
+	}
 
+	/**
+	 *
+	 * {@inheritDoc}
+	 *
+	 */
+	public ProjectDTO assignEmployeeToProject(int projectId, int employeeId) {
+		Project project = getProjectById(projectId);
+		Employee employee = service.getEmployeeById(employeeId);
+		project.getEmployees().add(employee);
+		return ProjectMapper.toProjectDTO(projectDao.save(project));
+	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 *
+	 */
+	public Project getProjectById(int projectId) {
+		return projectDao.findById(projectId)
+				.orElseThrow(() -> new EMSException(EmployeeManagementConstant.DETALILS_NOT_EXIST,
+						EmployeeManagementConstant.ERROR_CODE103));
+
+	}
 }
