@@ -56,5 +56,23 @@ public class EmployeeManagementConstant {
                                             .concat("?[a-zA-Z0-9]{1,20}")
                                             .concat("[@][a-z]{1,20}[a-z0-9]")
                                             .concat("{0,10}[.][a-z]{2,3}[.]?[a-z]{1,3}$");
+    public static final String ERROR_CODE101 = "Error code 101 :";
+    public static final String ERROR_CODE102 = "Error code 102 :";
+    public static final String ERROR_CODE103 = "Error code 103 :";
+    public static final String ERROR_CODE104 = "Error code 104 :";
+    public static final String ERROR_CODE105 = "Error code 105 :";
+    public static final String ERROR_CODE200 = "Error code 200 :";
+    public static final String EMPLOYEE_NOT_FOUND = "Employee not Found ";
+    public static final String DUPLICATE  = "Value already exists , Try again";
+    public static final String PROJECT_ID_NOT_EXISTS = "Project ID Doesn't Exists ";
+    public static final String PROJECT_NOT_FOUND = "Project Not Found :";
+    public static final String PROJECT_DELETE = "Enter The ProjectId To Delete";
+    public static final String DETALILS_NOT_EXIST = "Employee or Project details are not found";
+    public static final String INSERTION_EXCEPTION = "Error occured in inserting data, try again";
+    public static final String DISPLAYING_EXCEPTION = "Error occured in displaying , try again";
+    public static final String UPDATION_EXCEPTION = "Error occured in updating data, try again";
+    public static final String SEARCHING_EXCEPTION = "Error occured in searching data, try again";
+    public static final String DELETING_EXCEPTION = "Error occured in deleting data, try again";
+    public static final String IDNOTEXISTS_EXCEPTION = "Error occured, id not found, try again";
 
 }

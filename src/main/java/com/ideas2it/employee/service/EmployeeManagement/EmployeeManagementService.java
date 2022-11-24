@@ -1,182 +1,160 @@
 package com.ideas2it.employee.service.EmployeeManagement;
 
-import com.ideas2it.employee.dao.EmployeeDao;
-import com.ideas2it.employee.mapper.EmployeeMapper;
-import com.ideas2it.employee.dto.AddressDTO;
-import com.ideas2it.employee.dto.ProjectDTO;
-import com.ideas2it.employee.exception.EMSException;
-import com.ideas2it.employee.service.EmployeeService;
-import com.ideas2it.employee.dto.EmployeeDTO;
-import com.ideas2it.employee.model.Employee;
-import com.ideas2it.employee.service.EmployeeManagement.ProjectManagementService;
-import com.ideas2it.employee.service.ProjectService;
-import com.ideas2it.employee.view.EmployeeView;
-import com.ideas2it.employee.util.ValidationUtil;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
+import org.apache.logging.log4j.LogManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ideas2it.employee.constant.EmployeeManagementConstant;
+import com.ideas2it.employee.dao.EmployeeDAO;
+import com.ideas2it.employee.dto.EmployeeDTO;
+import com.ideas2it.employee.exception.EMSException;
+import com.ideas2it.employee.mapper.EmployeeMapper;
+import com.ideas2it.employee.model.Employee;
+import com.ideas2it.employee.model.Project;
+import com.ideas2it.employee.service.EmployeeService;
 
 /**
- * Get's the employee details from the database and provides  
- * the use and from user to the database.
+ * Get's the employee details from the database and provides the user and from
+ * user to the database.
  *
  * @version 1.8 13-09-2022
  * @author Naveenkumar R
  */
+
+@Service
 public class EmployeeManagementService implements EmployeeService {
-    EmployeeMapper employeeMapper = new EmployeeMapper();
-    EmployeeDao employeeDao = new EmployeeDao();
-    ValidationUtil validationUtil = new ValidationUtil();
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validateField(String regexPattern, String fieldValue) {
-        return validationUtil.isValid(regexPattern, fieldValue);
-    }
+	@Autowired
+	private EmployeeDAO employeeDao;
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public int addEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        return employeeDao.addEmployee(employeeMapper.toEmployee(employeeDTO));
-    }
+        @Lazy
+	@Autowired
+	private ProjectManagementService service ;
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public List<EmployeeDTO> getEmployees() throws EMSException {
-        List<Employee> employees = employeeDao.getEmployees();
-        List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
-        for (Employee employee : employees) {
-            employeesDto.add(employeeMapper.toEmployeeDTO(employee));
-        }
-        return employeesDto;
-    }
+	private Logger logger = LogManager.getLogger(EmployeeManagementService.class);
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public List<EmployeeDTO> searchEmployee(String firstName) throws EMSException {
-        List<Employee> employees = employeeDao.searchEmployee(firstName);
-        List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
-        for (Employee employee : employees) {
-            employeesDto.add(employeeMapper.toEmployeeDTO(employee));
-        }
-        return employeesDto;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public EmployeeDTO addEmployee(EmployeeDTO employeeDto) throws EMSException {
+		if (validateEmail(employeeDto.getEmail()) && validatePhoneNumber(employeeDto.getPhoneNumber())) {
+			employeeDao.save(EmployeeMapper.toEmployee(employeeDto));
+		} else {
+			logger.error(EmployeeManagementConstant.DUPLICATE, EmployeeManagementConstant.ERROR_CODE200);
+			throw new EMSException(EmployeeManagementConstant.DUPLICATE, EmployeeManagementConstant.ERROR_CODE200);
+		}
+		logger.info("Employee created for EmployeeID =" + employeeDto.getEmployeeId());
+		return employeeDto;
+	}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public void updateEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        employeeDao.updateEmployee(employeeMapper.toEmployee(employeeDTO));
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public List<EmployeeDTO> getEmployees() {
+		List<Employee> employees = employeeDao.findAll();
+		List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
+		for (Employee employee : employees) {
+			employeesDto.add(EmployeeMapper.toEmployeeDTO(employee));
+		}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public void deleteEmployee(int employeeId) throws EMSException {
-        employeeDao.deleteEmployee(employeeId);
-    }
+		return employeesDto;
+	}
 
-    /**
-     * 
-     * {@inheritDoc}
-     * 
-     */
-    public ProjectDTO getProjectById(int projectId) throws EMSException {
-        ProjectService projectService = new ProjectManagementService();
-        ProjectDTO projectDto = projectService.getProjectById(projectId);
-        return projectDto;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public List<EmployeeDTO> searchEmployee(String name) {
+		List<Employee> employees = employeeDao.findByName(name);
+		List<EmployeeDTO> employeesDto = new ArrayList<EmployeeDTO>();
+		for (Employee employee : employees) {
+			employeesDto.add(EmployeeMapper.toEmployeeDTO(employee));
+		}
+		return employeesDto;
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validateJoiningDate(LocalDate dateOfBirth,LocalDate dateOfJoining) {
-        return ValidationUtil.validateJoiningDate(dateOfBirth,dateOfJoining);
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public EmployeeDTO updateEmployee(EmployeeDTO employeeDto) {
+		Employee employee = EmployeeMapper.toEmployee(employeeDto);
+		EmployeeDTO employeeDTO = null;
+		try {
+			employeeDTO = EmployeeMapper.toEmployeeDTO(employeeDao.save(employee));
+		} catch (ConstraintViolationException e) {
+			logger.error(e.getMessage());
+			throw new EMSException(EmployeeManagementConstant.UPDATION_EXCEPTION,
+					EmployeeManagementConstant.ERROR_CODE200);
+		}
+		return employeeDTO;
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validateBirthDate(LocalDate dateOfBirth) {
-        return ValidationUtil.validateBirthDate(dateOfBirth);
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public void deleteEmployee(int id) {
+		employeeDao.deleteById(id);
+		logger.info("Employee deleted successfully for EmploeeID =" + id);
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validateEmail(String email) throws EMSException {
-        return (!(getEmployees().stream().
-               anyMatch(employeeDTO -> employeeDTO.getEmail().equals(email))));
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public EmployeeDTO assignProjectToEmployee(int employeeId, int projectId) {
+		Employee employee = getEmployeeById(employeeId);
+		Project project = service.getProjectById(projectId);
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean validatePhoneNumber(long phoneNumber) throws EMSException {
-        return (!(getEmployees().stream().
-               anyMatch(employeeDTO -> String.valueOf(employeeDTO.
-               getPhoneNumber()).equals(Long.toString(phoneNumber)))));
-    }
+		employee.getProjects().add(project);
+		return EmployeeMapper.toEmployeeDTO(employeeDao.save(employee));
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public boolean isEmployeePresent(int employeeId) throws EMSException {
-        List<Employee> employees = employeeDao.getEmployees();
-        EmployeeDTO employeeDto = null;
-        for (Employee employee : employees) {
-            if (employee.getEmployeeId() == employeeId) {
-                return true;
-            }
-        }
-        return false;
-    }
+	}
 
-    /**
-     *
-     * {@inheritDoc}
-     *
-     */
-    public EmployeeDTO getEmployeeById(int employeeId) throws EMSException {
-        List<Employee> employees = employeeDao.getEmployees();
-        EmployeeDTO employeeDto = null;
-        for (Employee employee : employees) {
-            if (employee.getEmployeeId() == employeeId) {
-                employeeDto = (employeeMapper.toEmployeeDTO(employee));
-                break;
-            }
-        }
-        return employeeDto;
-    }
+	/**
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 */
+	public Employee getEmployeeById(int employeeId) {
+		Employee employee = employeeDao.findById(employeeId)
+				.orElseThrow(() -> new EMSException(EmployeeManagementConstant.DETALILS_NOT_EXIST,
+						EmployeeManagementConstant.ERROR_CODE103));
+
+		return employee;
+	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 *
+	 */
+	public boolean validateEmail(String email) {
+		return (!(getEmployees().stream().anyMatch(employeeDTO -> employeeDTO.getEmail().equals(email))));
+	}
+
+	/**
+	 *
+	 * {@inheritDoc}
+	 *
+	 */
+	public boolean validatePhoneNumber(long phoneNumber) {
+		return (!(getEmployees().stream().anyMatch(
+				employeeDTO -> String.valueOf(employeeDTO.getPhoneNumber()).equals(Long.toString(phoneNumber)))));
+	}
 
 }

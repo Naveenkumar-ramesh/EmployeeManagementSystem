@@ -2,7 +2,6 @@ package com.ideas2it.employee.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * It presents project details.
@@ -10,6 +9,7 @@ import java.util.ArrayList;
  * @version 2.0 27-10-2022
  * @author Naveenkumar R
  */
+
 public class ProjectDTO {
     private int projectId;
     private String projectName;
