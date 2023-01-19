@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.ideas2it.employee.model.Employee;
 
 @Repository
-public interface EmployeeDAO extends JpaRepository<Employee, Integer> {
+public interface EmployeeDao extends JpaRepository<Employee, Integer> {
 	@Query("FROM Employee e WHERE e.firstName LIKE %:name%")
 	List<Employee> findByName(@Param("name")String name);
 }

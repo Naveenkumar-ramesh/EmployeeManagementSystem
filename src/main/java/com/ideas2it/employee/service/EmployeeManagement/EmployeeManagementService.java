@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ideas2it.employee.constant.EmployeeManagementConstant;
-import com.ideas2it.employee.dao.EmployeeDAO;
+import com.ideas2it.employee.dao.EmployeeDao;
 import com.ideas2it.employee.dto.EmployeeDTO;
 import com.ideas2it.employee.exception.EMSException;
 import com.ideas2it.employee.mapper.EmployeeMapper;
@@ -30,9 +30,8 @@ import com.ideas2it.employee.service.EmployeeService;
 public class EmployeeManagementService implements EmployeeService {
 
 	@Autowired
-	private EmployeeDAO employeeDao;
+	private EmployeeDao employeeDao;
 
-        @Lazy
 	@Autowired
 	private ProjectManagementService service ;
 
